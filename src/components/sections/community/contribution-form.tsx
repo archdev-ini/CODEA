@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -29,8 +30,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Upload, Wand2 } from 'lucide-react';
+import { Loader2, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { submitContribution } from '@/app/actions';
 
 const contributionSchema = z.object({
   country: z.string().min(1, 'Country is required'),
@@ -40,13 +42,15 @@ const contributionSchema = z.object({
   references: z.string().optional(),
   tags: z.string().optional(),
   contributorName: z.string().optional(),
-  contributorEmail: z.string().email('Invalid email address').optional(),
+  contributorEmail: z.string().optional().or(z.literal('')),
 });
 
 type ContributionFormValues = z.infer<typeof contributionSchema>;
 
 export default function ContributionForm() {
-    const { toast } = useToast();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<ContributionFormValues>({
     resolver: zodResolver(contributionSchema),
     defaultValues: {
@@ -61,13 +65,26 @@ export default function ContributionForm() {
     },
   });
 
-  function onSubmit(data: ContributionFormValues) {
-    console.log(data);
-    toast({
-        title: "Contribution Submitted",
-        description: "Thank you! Your contribution is pending review.",
-    });
-    form.reset();
+  async function onSubmit(data: ContributionFormValues) {
+    setIsLoading(true);
+    const result = await submitContribution(data);
+    setIsLoading(false);
+
+    if (result.success) {
+      toast({
+        title: 'Contribution Submitted',
+        description: 'Thank you! Your contribution is pending review.',
+      });
+      form.reset();
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Submission Failed',
+        description:
+          result.error ||
+          'An error occurred while submitting your contribution.',
+      });
+    }
   }
 
   return (
@@ -83,7 +100,10 @@ export default function ContributionForm() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <FormField
                     control={form.control}
@@ -127,7 +147,7 @@ export default function ContributionForm() {
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select a section" />
-                            </SelectTrigger>
+                            </Trigger>
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="structural">
@@ -207,7 +227,7 @@ export default function ContributionForm() {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="tags"
@@ -220,7 +240,7 @@ export default function ContributionForm() {
                           {...field}
                         />
                       </FormControl>
-                       <FormDescription>
+                      <FormDescription>
                         Optional: Comma-separated list of keywords.
                       </FormDescription>
                       <FormMessage />
@@ -229,57 +249,78 @@ export default function ContributionForm() {
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <FormField
+                  <FormField
                     control={form.control}
                     name="contributorName"
                     render={({ field }) => (
-                        <FormItem>
+                      <FormItem>
                         <FormLabel>Your Name</FormLabel>
                         <FormControl>
-                            <Input placeholder="Optional" {...field} />
+                          <Input placeholder="Optional" {...field} />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
-                    <FormField
+                  />
+                  <FormField
                     control={form.control}
                     name="contributorEmail"
                     render={({ field }) => (
-                        <FormItem>
+                      <FormItem>
                         <FormLabel>Your Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="Optional, for updates" {...field} />
+                          <Input
+                            placeholder="Optional, for updates"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
-                        </FormItem>
+                      </FormItem>
                     )}
-                    />
+                  />
                 </div>
-                
+
                 <div>
-                    <FormLabel>Supporting File</FormLabel>
-                    <div className="mt-2 flex justify-center rounded-lg border border-dashed border-input px-6 py-10">
-                        <div className="text-center">
-                            <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
-                            <div className="mt-4 flex text-sm leading-6 text-muted-foreground">
-                                <label
-                                htmlFor="file-upload"
-                                className="relative cursor-pointer rounded-md font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:text-primary/80"
-                                >
-                                <span>Upload a file</span>
-                                <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                </label>
-                                <p className="pl-1">or drag and drop</p>
-                            </div>
-                            <p className="text-xs leading-5 text-muted-foreground">PDF, PNG, JPG up to 10MB</p>
-                        </div>
+                  <FormLabel>Supporting File</FormLabel>
+                  <div className="mt-2 flex justify-center rounded-lg border border-dashed border-input px-6 py-10">
+                    <div className="text-center">
+                      <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
+                      <div className="mt-4 flex text-sm leading-6 text-muted-foreground">
+                        <label
+                          htmlFor="file-upload"
+                          className="relative cursor-pointer rounded-md font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:text-primary/80"
+                        >
+                          <span>Upload a file</span>
+                          <input
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            className="sr-only"
+                          />
+                        </label>
+                        <p className="pl-1">or drag and drop</p>
+                      </div>
+                      <p className="text-xs leading-5 text-muted-foreground">
+                        PDF, PNG, JPG up to 10MB
+                      </p>
                     </div>
+                  </div>
                 </div>
 
-
-                <Button type="submit" size="lg" className="w-full">
-                  Submit Contribution for Review
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Contribution for Review'
+                  )}
                 </Button>
               </form>
             </Form>
