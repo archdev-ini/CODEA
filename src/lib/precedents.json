@@ -1,28 +1,3 @@
 {
-  "precedents": [
-    {
-      "id": "prec001",
-      "title": "Eastgate Centre, Harare, Zimbabwe",
-      "concept": "Biomimicry in passive cooling",
-      "description": "A shopping centre and office block that uses passive cooling, inspired by the self-cooling mounds of African termites. It uses only 10% of the energy of a conventional building its size."
-    },
-    {
-      "id": "prec002",
-      "title": "Makoko Floating School, Lagos, Nigeria",
-      "concept": "Floating architecture for flood-prone areas",
-      "description": "A prototype floating structure, built for the Makoko waterfront community. It uses local materials and is designed to be a scalable solution for coastal communities facing rising sea levels."
-    },
-    {
-      "id": "prec003",
-      "title": "Lideta Mercato, Addis Ababa, Ethiopia",
-      "concept": "Naturally ventilated marketplace",
-      "description": "A modern marketplace that uses a perforated concrete facade, inspired by traditional Ethiopian fabrics, to provide natural light and ventilation, creating a comfortable shopping environment in a tropical climate."
-    },
-    {
-      "id": "prec004",
-      "title": "Umubano Primary School, Kigali, Rwanda",
-      "concept": "Low-cost, community-built educational spaces",
-      "description": "A school built with local labor and materials, featuring earth-brick walls and simple steel trusses. The design focuses on creating comfortable learning environments with limited resources."
-    }
-  ]
+  "precedents": []
 }

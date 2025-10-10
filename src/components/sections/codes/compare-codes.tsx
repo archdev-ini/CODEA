@@ -53,25 +53,15 @@ export default function CompareCodes() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Criteria</TableHead>
-                            <TableHead>Nigeria</TableHead>
-                            <TableHead>Kenya</TableHead>
+                            <TableHead>Country A</TableHead>
+                            <TableHead>Country B</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         <TableRow>
-                            <TableCell className='font-medium'>Max Story Height</TableCell>
-                            <TableCell>12 floors (40m)</TableCell>
-                            <TableCell>10 floors (33m)</TableCell>
-                        </TableRow>
-                         <TableRow>
-                            <TableCell className='font-medium'>Min. Evacuation Width</TableCell>
-                            <TableCell>1.2m per 100 persons</TableCell>
-                            <TableCell>1.1m per 100 persons</TableCell>
-                        </TableRow>
-                         <TableRow>
-                            <TableCell className='font-medium'>Sprinkler Requirement</TableCell>
-                            <TableCell>Above 8 floors</TableCell>
-                            <TableCell>Above 6 floors</TableCell>
+                            <TableCell colSpan={3} className="text-center text-muted-foreground">
+                                Select countries and a category to see a comparison.
+                            </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

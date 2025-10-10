@@ -1,22 +1,3 @@
 {
-  "placeholderImages": [
-    {
-      "id": "design-hub-1",
-      "description": "A showcase of innovative architectural case studies from across Africa.",
-      "imageUrl": "https://picsum.photos/seed/codea1/600/400",
-      "imageHint": "modern architecture"
-    },
-    {
-      "id": "design-hub-2",
-      "description": "An extensive archive of traditional and contemporary African building materials.",
-      "imageUrl": "https://picsum.photos/seed/codea2/600/400",
-      "imageHint": "building materials"
-    },
-    {
-      "id": "design-hub-3",
-      "description": "In-depth reports on urbanism and city planning in African metropolises.",
-      "imageUrl": "https://picsum.photos/seed/codea3/600/400",
-      "imageHint": "city aerial"
-    }
-  ]
+  "placeholderImages": []
 }
