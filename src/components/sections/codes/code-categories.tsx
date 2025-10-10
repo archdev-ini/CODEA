@@ -11,7 +11,6 @@ import {
   PersonStanding,
   Leaf,
   GalleryVertical,
-  Brick,
   Construction,
   DoorOpen,
 } from 'lucide-react';
@@ -23,7 +22,7 @@ const categories = [
     icon: <Building className="h-5 w-5 mr-2" />,
     summaries: [
       { title: 'Foundations', icon: <Construction /> },
-      { title: 'Wall Systems', icon: <Brick /> },
+      { title: 'Wall Systems', icon: <Construction /> },
       { title: 'Roofing', icon: <DoorOpen /> },
     ],
   },
