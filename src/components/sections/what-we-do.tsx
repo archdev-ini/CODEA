@@ -40,7 +40,10 @@ export default function WhatWeDo() {
 
         <div className="grid md:grid-cols-3 gap-8 mt-12">
           {items.map((item, index) => (
-            <Card key={index} className="bg-card border-none shadow-none text-center">
+            <Card
+              key={index}
+              className="bg-card border-none shadow-none text-center"
+            >
               <CardHeader className="items-center">
                 <div className="bg-primary/10 p-4 rounded-full mb-4">
                   {item.icon}
@@ -48,7 +51,9 @@ export default function WhatWeDo() {
                 <CardTitle>{item.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">{item.description}</CardDescription>
+                <CardDescription className="text-base">
+                  {item.description}
+                </CardDescription>
               </CardContent>
             </Card>
           ))}

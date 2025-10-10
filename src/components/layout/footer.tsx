@@ -11,12 +11,15 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <Library className="h-6 w-6 text-muted-foreground" />
-              <span className="font-semibold text-foreground text-lg">CODEA</span>
+              <span className="font-semibold text-foreground text-lg">
+                CODEA
+              </span>
             </div>
             <p className="text-sm text-muted-foreground max-w-sm">
               © {currentYear} CODEA — Pan-African Architectural Intelligence.
               <br />
-              Lagos • Nairobi • Accra • Cape Town • Kigali
+              Built by architects, researchers, and technologists shaping
+              Africa’s design future.
             </p>
           </div>
           <nav className="flex flex-col gap-3 text-sm">

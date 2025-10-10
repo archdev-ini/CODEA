@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative py-20 md:py-32 bg-background overflow-hidden">
+    <section className="relative py-20 md:py-32 bg-background overflow-hidden min-h-screen flex items-center">
       <div className="absolute inset-0 z-0 opacity-5">
         {/* Subtle grid lines */}
         <div
@@ -18,7 +18,10 @@ export default function Hero() {
         ></div>
       </div>
       <div className="absolute inset-0 z-0 flex items-center justify-center">
-        <div className="text-foreground/5 animate-spin-slow" style={{fontSize: 'min(80vw, 80vh)'}}>
+        <div
+          className="text-foreground/5 animate-spin-slow"
+          style={{ fontSize: 'min(80vw, 80vh)' }}
+        >
           <svg
             viewBox="0 0 512 512"
             fill="currentColor"
@@ -39,14 +42,14 @@ export default function Hero() {
           where you begin.
         </p>
         <div className="flex justify-center items-center gap-4">
-          <a href="#library">
+          <a href="/start">
             <Button size="lg">
               <ArrowRight className="mr-2 h-5 w-5 -rotate-45" />
               Start with Codea
             </Button>
           </a>
-          <Button size="lg" variant="outline">
-            Explore the Codes
+          <Button size="lg" variant="outline" asChild>
+            <a href="/codes">Explore the Codes</a>
           </Button>
         </div>
       </div>
