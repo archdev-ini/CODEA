@@ -19,6 +19,9 @@ export default function Header() {
             <Link href="/about">About</Link>
           </Button>
           <Button variant="link" asChild>
+            <Link href="/codes">Codes</Link>
+          </Button>
+          <Button variant="link" asChild>
             <Link href="#library">Precedents</Link>
           </Button>
         </nav>
