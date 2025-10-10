@@ -18,8 +18,7 @@ export default function Footer() {
             <p className="text-sm text-muted-foreground max-w-sm">
               © {currentYear} CODEA — Pan-African Architectural Intelligence.
               <br />
-              Built by architects, researchers, and technologists shaping
-              Africa’s design future.
+              Lagos • Nairobi • Accra • Cape Town • Kigali
             </p>
           </div>
           <nav className="flex flex-col gap-3 text-sm">
@@ -31,10 +30,10 @@ export default function Footer() {
               About CODEA
             </Link>
             <Link
-              href="#atlas"
+              href="/codes"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              The Atlas (coming soon)
+              Code Library
             </Link>
             <Link
               href="/community"
@@ -46,13 +45,13 @@ export default function Footer() {
           <nav className="flex flex-col gap-3 text-sm">
             <h3 className="font-semibold text-foreground mb-2">Support</h3>
             <Link
-              href="#contact"
+              href="/community"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Contact
             </Link>
             <Link
-              href="#terms"
+              href="#"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Terms / Credits

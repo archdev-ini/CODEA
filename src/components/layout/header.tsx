@@ -22,7 +22,7 @@ export default function Header() {
             <Link href="/codes">Codes</Link>
           </Button>
           <Button variant="link" asChild>
-            <Link href="#library">Precedents</Link>
+            <Link href="/community">Community</Link>
           </Button>
         </nav>
       </div>
