@@ -14,10 +14,10 @@ export default function CTA() {
         </p>
         <div className="flex justify-center items-center gap-4">
           <Button size="lg" asChild>
-            <Link href="#">Start with Codea</Link>
+            <Link href="/codes">Explore Code Library</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
-            <Link href="#">Join the Waitlist</Link>
+            <Link href="/community">Contribute Knowledge</Link>
           </Button>
         </div>
       </div>

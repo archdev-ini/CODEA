@@ -50,12 +50,6 @@ export default function Footer() {
             >
               Contact
             </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Terms / Credits
-            </Link>
           </nav>
         </div>
       </div>

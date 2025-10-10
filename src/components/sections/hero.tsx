@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Hero() {
   return (
@@ -42,14 +43,14 @@ export default function Hero() {
           where you begin.
         </p>
         <div className="flex justify-center items-center gap-4">
-          <a href="/start">
-            <Button size="lg">
+          <Button size="lg" asChild>
+            <Link href="/about">
               <ArrowRight className="mr-2 h-5 w-5 -rotate-45" />
-              Start with Codea
-            </Button>
-          </a>
+              About CODEA
+            </Link>
+          </Button>
           <Button size="lg" variant="outline" asChild>
-            <a href="/codes">Explore the Codes</a>
+            <Link href="/codes">Explore the Codes</Link>
           </Button>
         </div>
       </div>

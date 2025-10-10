@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 
 const insights = [
   {
@@ -42,9 +43,11 @@ export default function CommunityInsights() {
           ))}
         </div>
         <div className="text-center mt-12">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Comment or Case Note
+          <Button asChild>
+            <Link href="/community">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Comment or Case Note
+            </Link>
           </Button>
         </div>
       </div>
