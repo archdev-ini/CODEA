@@ -42,7 +42,7 @@ const contributionSchema = z.object({
   references: z.string().optional(),
   tags: z.string().optional(),
   contributorName: z.string().optional(),
-  contributorEmail: z.string().optional().or(z.literal('')),
+  contributorEmail: z.string().email('Invalid email address').optional().or(z.literal('')),
 });
 
 type ContributionFormValues = z.infer<typeof contributionSchema>;
