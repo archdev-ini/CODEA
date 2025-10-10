@@ -6,18 +6,20 @@ export default function VisionForward() {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6 font-headline">
-            The Vision Forward
+            From architecture in Africa — to architectural intelligence for the
+            world.
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-            Our goal is to create a public utility for the built environment in
-            Africa — a foundational layer that supports architects, educates
-            students, and informs policy. We envision a future where design is
-            not just about what we build, but how it connects to the vast
-            network of knowledge that came before it.
+            CODEA begins as a Pan-African resource — but its ambition is global.
+            The platform will connect regional knowledge systems into a worldwide
+            framework for contextual architecture. Each African country becomes a
+            node in a decentralized network of design intelligence.
           </p>
           <div className="flex items-center justify-center text-lg text-primary font-medium">
-            <span>A more connected practice is possible.</span>
-            <ArrowRight className="ml-2 h-5 w-5" />
+            <span>
+              Because the world deserves to learn from Africa’s resilience, not
+              just its challenges.
+            </span>
           </div>
         </div>
       </div>
