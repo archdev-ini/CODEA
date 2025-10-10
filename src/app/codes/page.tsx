@@ -4,9 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import OverviewHeader from '@/components/sections/codes/overview-header';
-import CodeCategories from '@/components/sections/codes/code-categories';
 import CountryIndex from '@/components/sections/codes/country-index';
-import CompareCodes from '@/components/sections/codes/compare-codes';
 import CommunityInsights from '@/components/sections/codes/community-insights';
 import FooterCta from '@/components/sections/codes/footer-cta';
 import SearchResults from '@/components/sections/codes/search-results';
@@ -48,9 +46,7 @@ export default function CodesPage() {
           <SearchResults articles={filteredArticles} />
         ) : (
           <>
-            <CodeCategories />
             <CountryIndex />
-            <CompareCodes />
             <CommunityInsights />
           </>
         )}
