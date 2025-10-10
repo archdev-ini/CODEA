@@ -27,7 +27,15 @@
             "NBC Section 2.1.4",
             "BS 8110: Part 1 (Structural Use of Concrete)"
           ],
-          "keywords": ["foundation", "structural design", "soil bearing capacity"]
+          "keywords": ["foundation", "structural design", "soil bearing capacity"],
+          "notes": "This is a critical first step for any major building project in Nigeria.",
+          "examples": [
+            {
+              "context": "10-storey residential building in Lagos",
+              "application": "Requires a detailed geotechnical survey and raft foundation design due to soft soil conditions."
+            }
+          ],
+          "related_codes": ["NBC-STR-1.2"]
         },
         {
           "code_id": "NBC-STR-1.2",
@@ -38,7 +46,10 @@
             "Provide stirrups at 150mm c/c in seismic zones."
           ],
           "references": ["NBC Section 3.4.1"],
-          "keywords": ["columns", "beams", "reinforced concrete"]
+          "keywords": ["columns", "beams", "reinforced concrete"],
+          "notes": "Reinforcement detailing is crucial for structural integrity.",
+          "examples": [],
+          "related_codes": ["NBC-STR-1.1"]
         }
       ]
     },
@@ -56,7 +67,15 @@
             "Provide at least two exits for assembly buildings."
           ],
           "references": ["NBC Section 6.2"],
-          "keywords": ["fire safety", "egress", "materials"]
+          "keywords": ["fire safety", "egress", "materials"],
+          "notes": "This applies to schools, offices, and other public gathering spaces.",
+          "examples": [
+            {
+              "context": "Cinema hall with 200-person capacity",
+              "application": "Requires two clearly marked, unobstructed exits, each at least 1.2m wide. Doors must open outwards."
+            }
+          ],
+          "related_codes": []
         }
       ]
     }

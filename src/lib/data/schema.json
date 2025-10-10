@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CODEA Building Code Schema",
+  "description": "Schema for storing and querying African building codes, regulations, and standards for CODEA.",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "description": "Metadata about this code file or collection.",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Country name, e.g., 'Nigeria'."
+        },
+        "region": {
+          "type": "string",
+          "description": "Geographic region, e.g., 'West Africa'."
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of this dataset, e.g., '1.0'."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Last updated date."
+        },
+        "source": {
+          "type": "string",
+          "description": "Official document source or standard."
+        },
+        "language": {
+          "type": "string",
+          "description": "Language used in this dataset."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Top-level classification tags for filtering."
+        }
+      },
+      "required": ["country", "version", "updated_at", "source"]
+    },
+    "sections": {
+      "type": "array",
+      "description": "Each section represents a code chapter or thematic category (e.g., Fire Safety, Structure, Zoning).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique ID for the section, e.g., 'fire_safety'."
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the section, e.g., 'Fire Safety and Egress'."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Brief overview of what this section covers."
+          },
+          "articles": {
+            "type": "array",
+            "description": "Detailed code entries or provisions under this section.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code_id": {
+                  "type": "string",
+                  "description": "Unique article identifier, e.g., 'NBC-FIR-2.1'."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Article title or code clause name."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "A detailed explanation or context of the article."
+                },
+                "requirements": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "List of explicit design or construction requirements."
+                },
+                "references": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Citations or cross-references to official standards or other codes."
+                },
+                "keywords": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Keywords for searching and filtering."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "Additional remarks, exceptions, or professional notes."
+                },
+                "examples": {
+                  "type": "array",
+                  "description": "Illustrative or practical examples for this article.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "context": {
+                        "type": "string",
+                        "description": "Project type or scenario."
+                      },
+                      "application": {
+                        "type": "string",
+                        "description": "How the code is applied in that scenario."
+                      }
+                    }
+                  }
+                },
+                "related_codes": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "List of code_ids linked to this one for contextual navigation."
+                }
+              },
+              "required": ["code_id", "title", "description"]
+            }
+          }
+        },
+        "required": ["id", "title", "articles"]
+      }
+    }
+  },
+  "required": ["meta", "sections"]
+}
