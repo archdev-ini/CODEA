@@ -1,7 +1,14 @@
+'use client';
+
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 
-export default function OverviewHeader() {
+type OverviewHeaderProps = {
+  searchTerm: string;
+  onSearchTermChange: (term: string) => void;
+};
+
+export default function OverviewHeader({ searchTerm, onSearchTermChange }: OverviewHeaderProps) {
   return (
     <section className="py-20 md:py-32 bg-card border-b">
       <div className="container mx-auto px-4 text-center">
@@ -18,6 +25,8 @@ export default function OverviewHeader() {
             <Input
               placeholder="Search codes, materials, or building types…"
               className="w-full pl-12 h-12 text-base"
+              value={searchTerm}
+              onChange={(e) => onSearchTermChange(e.target.value)}
             />
           </div>
         </div>
