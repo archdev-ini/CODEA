@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "country": "Nigeria",
+    "region": "West Africa",
+    "version": "1.0",
+    "updated_at": "2025-10-10",
+    "source": "National Building Code (NBC 2006)",
+    "language": "English",
+    "tags": ["building", "zoning", "safety"]
+  },
+  "sections": [
+    {
+      "id": "structural_requirements",
+      "title": "Structural Requirements",
+      "summary": "Guidelines for the design and construction of structural systems to ensure safety and performance.",
+      "articles": [
+        {
+          "code_id": "NBC-STR-1.1",
+          "title": "Foundations",
+          "description": "Foundations must be designed to safely transmit loads to the ground without causing settlement or instability.",
+          "requirements": [
+            "Soil test must be conducted for all multi-storey buildings.",
+            "Footings should extend below the frost line or as determined by soil investigation.",
+            "Use reinforced concrete for foundations in weak soil conditions."
+          ],
+          "references": [
+            "NBC Section 2.1.4",
+            "BS 8110: Part 1 (Structural Use of Concrete)"
+          ],
+          "keywords": ["foundation", "structural design", "soil bearing capacity"]
+        },
+        {
+          "code_id": "NBC-STR-1.2",
+          "title": "Columns and Beams",
+          "description": "All load-bearing members shall comply with reinforced concrete design standards.",
+          "requirements": [
+            "Minimum concrete strength: 20 N/mm² for residential.",
+            "Provide stirrups at 150mm c/c in seismic zones."
+          ],
+          "references": ["NBC Section 3.4.1"],
+          "keywords": ["columns", "beams", "reinforced concrete"]
+        }
+      ]
+    },
+    {
+      "id": "fire_safety",
+      "title": "Fire Safety and Egress",
+      "summary": "Provisions to ensure fire safety, evacuation, and fire resistance of materials.",
+      "articles": [
+        {
+          "code_id": "NBC-FIR-2.1",
+          "title": "Fire Resistance",
+          "description": "All materials used in escape routes must be non-combustible.",
+          "requirements": [
+            "Minimum 1-hour fire rating for staircases.",
+            "Provide at least two exits for assembly buildings."
+          ],
+          "references": ["NBC Section 6.2"],
+          "keywords": ["fire safety", "egress", "materials"]
+        }
+      ]
+    }
+  ]
+}
