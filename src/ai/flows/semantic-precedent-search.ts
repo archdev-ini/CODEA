@@ -9,6 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { getArchitecturalPrecedents } from '@/lib/precedents';
 
 const SemanticPrecedentSearchInputSchema = z.object({
   concept: z
@@ -41,6 +42,7 @@ const prompt = ai.definePrompt({
   input: {schema: SemanticPrecedentSearchInputSchema},
   output: {schema: SemanticPrecedentSearchOutputSchema},
   prompt: `You are an expert architectural assistant. Using the CODEA library, find architectural precedents related to the following concept: {{{concept}}}. Return a list of relevant precedents.`,
+  tools: [getArchitecturalPrecedents]
 });
 
 const semanticPrecedentSearchFlow = ai.defineFlow(
