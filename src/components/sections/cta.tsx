@@ -4,18 +4,21 @@ export default function CTA() {
   return (
     <section id="cta" className="py-20 md:py-28 bg-background">
       <div className="container mx-auto text-center px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6 font-headline">
-          Ready to Build the Future?
+        <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 font-headline">
+          Start every project with CODEA.
         </h2>
         <p className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8">
-          Start your next project with the collective intelligence of African
-          architecture at your fingertips.
+          Begin with the codes, precedents, and principles that matter. CODEA is
+          where research meets design intent.
         </p>
-        <a href="#library">
-          <Button size="lg" variant="default">
-            Begin Your Design Journey
+        <div className="flex justify-center items-center gap-4">
+          <a href="#library">
+            <Button size="lg">Start with Codea</Button>
+          </a>
+          <Button size="lg" variant="outline">
+            Join the Waitlist
           </Button>
-        </a>
+        </div>
       </div>
     </section>
   );

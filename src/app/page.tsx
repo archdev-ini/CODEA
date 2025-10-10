@@ -1,10 +1,12 @@
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import Hero from '@/components/sections/hero';
-import Vision from '@/components/sections/vision';
-import PrecedentLibrary from '@/components/sections/precedent-library';
-import DesignIntelligenceHub from '@/components/sections/design-intelligence-hub';
+import Statement from '@/components/sections/statement';
+import WhatWeDo from '@/components/sections/what-we-do';
+import WhyItMatters from '@/components/sections/why-it-matters';
+import CoreTagline from '@/components/sections/core-tagline';
 import CTA from '@/components/sections/cta';
+import PrecedentLibrary from '@/components/sections/precedent-library';
 
 export default function Home() {
   return (
@@ -12,9 +14,11 @@ export default function Home() {
       <Header />
       <main className="flex-grow">
         <Hero />
-        <Vision />
+        <Statement />
+        <WhatWeDo />
+        <WhyItMatters />
+        <CoreTagline />
         <PrecedentLibrary />
-        <DesignIntelligenceHub />
         <CTA />
       </main>
       <Footer />

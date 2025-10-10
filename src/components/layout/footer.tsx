@@ -6,35 +6,56 @@ export default function Footer() {
 
   return (
     <footer className="bg-card border-t border-border">
-      <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <Library className="h-6 w-6 text-muted-foreground" />
-            <span className="font-semibold text-foreground">CODEA</span>
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Library className="h-6 w-6 text-muted-foreground" />
+              <span className="font-semibold text-foreground text-lg">CODEA</span>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              © {currentYear} CODEA — Pan-African Architectural Intelligence.
+              <br />
+              Built by architects, researchers, and technologists shaping Africa’s
+              design future.
+            </p>
           </div>
-          <nav className="flex gap-4 sm:gap-6 text-sm">
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Sections</h3>
             <Link
-              href="#vision"
+              href="#about"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Vision
+              About CODEA
             </Link>
             <Link
-              href="#library"
+              href="#atlas"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Library
+              The Atlas (coming soon)
             </Link>
             <Link
-              href="#hub"
+              href="#community"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Hub
+              Community
             </Link>
           </nav>
-          <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} CODEA. All Rights Reserved.
-          </p>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Support</h3>
+            <Link
+              href="#contact"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Contact
+            </Link>
+            <Link
+              href="#terms"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Terms / Credits
+            </Link>
+          </nav>
         </div>
       </div>
     </footer>
