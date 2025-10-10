@@ -3,7 +3,6 @@ import Footer from '@/components/layout/footer';
 import Hero from '@/components/sections/hero';
 import Statement from '@/components/sections/statement';
 import WhatWeDo from '@/components/sections/what-we-do';
-import WhyItMatters from '@/components/sections/why-it-matters';
 import CTA from '@/components/sections/cta';
 import { Separator } from '@/components/ui/separator';
 
@@ -15,7 +14,6 @@ export default function Home() {
         <Hero />
         <Statement />
         <WhatWeDo />
-        <WhyItMatters />
         <section id="tagline" className="py-16 md:py-20 bg-background">
           <div className="container mx-auto px-4 text-center">
             <Separator className="w-1/4 mx-auto" />
