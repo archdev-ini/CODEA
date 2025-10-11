@@ -1,18 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import OverviewHeader from '@/components/sections/codes/overview-header';
-import CountryIndex from '@/components/sections/codes/country-index';
 import CommunityInsights from '@/components/sections/codes/community-insights';
 import FooterCta from '@/components/sections/codes/footer-cta';
 import SmartSearchResults from '@/components/sections/codes/smart-search-results';
 import type { AnswerCodeQuestionOutput } from '@/ai/flows/answer-code-question';
 import { askCodeQuestion } from '@/app/actions';
 import { Loader2 } from 'lucide-react';
-
-export type SupportedCountry = 'nigeria';
+import { availableCountries, type Country } from '@/lib/countries';
+import CountryIndex from '@/components/sections/codes/country-index';
 
 export default function CodesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,11 +19,19 @@ export default function CodesPage() {
   const [searchResults, setSearchResults] =
     useState<AnswerCodeQuestionOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCountry, setSelectedCountry] =
-    useState<SupportedCountry>('nigeria');
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>('');
+
+  useEffect(() => {
+    const countries = availableCountries();
+    setCountries(countries);
+    if (countries.length > 0) {
+      setSelectedCountry(countries[0].value);
+    }
+  }, []);
 
   const handleSearch = async (question: string) => {
-    if (!question) return;
+    if (!question || !selectedCountry) return;
 
     setIsSearching(true);
     setError(null);
@@ -32,7 +39,7 @@ export default function CodesPage() {
 
     const result = await askCodeQuestion({
       question,
-      country: selectedCountry,
+      country: selectedCountry as any,
     });
 
     if (result.success && result.data) {
@@ -54,6 +61,7 @@ export default function CodesPage() {
           isSearching={isSearching}
           selectedCountry={selectedCountry}
           onCountryChange={setSelectedCountry}
+          countries={countries}
         />
         {isSearching && (
           <div className="flex justify-center items-center py-20">

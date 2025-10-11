@@ -10,12 +10,15 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { searchBuildingCodes } from '@/lib/codes';
+import { getCountryCodes } from '@/lib/countries';
+
+const countryCodes = getCountryCodes();
 
 const AnswerCodeQuestionInputSchema = z.object({
   question: z
     .string()
     .describe('A natural language question about building codes.'),
-  country: z.enum(['nigeria']).describe('The country to search codes for.'),
+  country: z.enum(countryCodes).describe('The country to search codes for.'),
 });
 export type AnswerCodeQuestionInput = z.infer<
   typeof AnswerCodeQuestionInputSchema
@@ -51,7 +54,7 @@ export async function answerCodeQuestion(
 
 const prompt = ai.definePrompt({
   name: 'answerCodeQuestionPrompt',
-  input: { schema: AnswerCode-QuestionInputSchema },
+  input: { schema: AnswerCodeQuestionInputSchema },
   output: { schema: AnswerCodeQuestionOutputSchema },
   prompt: `You are an expert architectural assistant specializing in African building regulations. Your task is to answer a user's question based on the national building code for {{{country}}}.
 

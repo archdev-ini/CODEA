@@ -11,13 +11,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Sparkles, Globe } from 'lucide-react';
-import type { SupportedCountry } from '@/app/codes/page';
+import { type Country } from '@/lib/countries';
 
 type OverviewHeaderProps = {
   onSearch: (question: string) => void;
   isSearching: boolean;
-  selectedCountry: SupportedCountry;
-  onCountryChange: (country: SupportedCountry) => void;
+  selectedCountry: string;
+  onCountryChange: (country: string) => void;
+  countries: Country[];
 };
 
 export default function OverviewHeader({
@@ -25,6 +26,7 @@ export default function OverviewHeader({
   isSearching,
   selectedCountry,
   onCountryChange,
+  countries,
 }: OverviewHeaderProps) {
   const [question, setQuestion] = useState('');
 
@@ -47,14 +49,19 @@ export default function OverviewHeader({
           <div className="flex justify-center">
             <Select
               value={selectedCountry}
-              onValueChange={(value) => onCountryChange(value as SupportedCountry)}
+              onValueChange={onCountryChange}
+              disabled={countries.length === 0}
             >
               <SelectTrigger className="w-[240px]">
                 <Globe className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Select a country" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="nigeria">Nigeria</SelectItem>
+                {countries.map((country) => (
+                  <SelectItem key={country.value} value={country.value}>
+                    {country.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

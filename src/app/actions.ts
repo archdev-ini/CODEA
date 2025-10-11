@@ -9,8 +9,7 @@ import {
   answerCodeQuestion,
   type AnswerCodeQuestionOutput,
 } from '@/ai/flows/answer-code-question';
-import fs from 'fs/promises';
-import path from 'path';
+import { getCountryCodes } from '@/lib/countries';
 
 const precedentSearchSchema = z.object({
   concept: z.string().min(3),
@@ -52,9 +51,10 @@ export async function searchPrecedents(
   }
 }
 
+const countryCodes = getCountryCodes();
 const codeQuestionSchema = z.object({
   question: z.string().min(10),
-  country: z.enum(['nigeria']),
+  country: z.enum(countryCodes),
 });
 
 type CodeQuestionResponse = {

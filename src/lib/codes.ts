@@ -1,6 +1,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import nigeriaData from './data/nigeria.json';
+import { getCountryCodes } from './countries';
 // Import other country data here in the future
 // import ghanaData from './data/ghana.json';
 
@@ -26,10 +27,12 @@ type CodeData = {
   }[];
 };
 
-const codeLibraries: Record<string, CodeData> = {
+export const codeLibraries: Record<string, CodeData> = {
   nigeria: nigeriaData,
   // ghana: ghanaData, // Example for future expansion
 };
+
+const countryCodes = getCountryCodes();
 
 export const searchBuildingCodes = ai.defineTool(
   {
@@ -43,7 +46,7 @@ export const searchBuildingCodes = ai.defineTool(
           'The search query. Can be keywords or a natural language question.'
         ),
       country: z
-        .enum(['nigeria'])
+        .enum(countryCodes)
         .describe('The country code to search within.'),
     }),
     outputSchema: z.array(
