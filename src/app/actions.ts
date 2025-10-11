@@ -54,6 +54,7 @@ export async function searchPrecedents(
 
 const codeQuestionSchema = z.object({
   question: z.string().min(10),
+  country: z.enum(['nigeria']),
 });
 
 type CodeQuestionResponse = {
@@ -77,6 +78,7 @@ export async function askCodeQuestion(
   try {
     const results = await answerCodeQuestion({
       question: validatedFields.data.question,
+      country: validatedFields.data.country,
     });
     return {
       success: true,

@@ -9,12 +9,13 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { searchNigerianBuildingCodes } from '@/lib/codes';
+import { searchBuildingCodes } from '@/lib/codes';
 
 const AnswerCodeQuestionInputSchema = z.object({
   question: z
     .string()
-    .describe('A natural language question about Nigerian building codes.'),
+    .describe('A natural language question about building codes.'),
+  country: z.enum(['nigeria']).describe('The country to search codes for.'),
 });
 export type AnswerCodeQuestionInput = z.infer<
   typeof AnswerCodeQuestionInputSchema
@@ -32,7 +33,7 @@ const AnswerCodeQuestionOutputSchema = z.object({
   answer: z
     .string()
     .describe(
-      'A direct, synthesized answer to the user\'s question, based on the provided code articles. If no relevant articles are found, this should state that an answer could not be determined.'
+      "A direct, synthesized answer to the user's question, based on the provided code articles. If no relevant articles are found, this should state that an answer could not be determined."
     ),
   relevant_articles: z
     .array(ArticleSchema)
@@ -50,11 +51,11 @@ export async function answerCodeQuestion(
 
 const prompt = ai.definePrompt({
   name: 'answerCodeQuestionPrompt',
-  input: { schema: AnswerCodeQuestionInputSchema },
+  input: { schema: AnswerCode-QuestionInputSchema },
   output: { schema: AnswerCodeQuestionOutputSchema },
-  prompt: `You are an expert architectural assistant specializing in African building regulations. Your task is to answer a user's question based on the Nigerian National Building Code.
+  prompt: `You are an expert architectural assistant specializing in African building regulations. Your task is to answer a user's question based on the national building code for {{{country}}}.
 
-Use the 'searchNigerianBuildingCodes' tool to find relevant articles for the user's question: {{{question}}}.
+Use the 'searchBuildingCodes' tool to find relevant articles for the user's question: {{{question}}}.
 
 Once you have the search results, perform the following steps:
 1. Carefully review the retrieved articles.
@@ -64,7 +65,7 @@ Once you have the search results, perform the following steps:
 5. Populate the 'relevant_articles' field with the exact article objects that you used to form the answer.
 
 Begin now.`,
-  tools: [searchNigerianBuildingCodes],
+  tools: [searchBuildingCodes],
 });
 
 const answerCodeQuestionFlow = ai.defineFlow(
@@ -73,7 +74,7 @@ const answerCodeQuestionFlow = ai.defineFlow(
     inputSchema: AnswerCodeQuestionInputSchema,
     outputSchema: AnswerCodeQuestionOutputSchema,
   },
-  async input => {
+  async (input) => {
     const { output } = await prompt(input);
     return output!;
   }
