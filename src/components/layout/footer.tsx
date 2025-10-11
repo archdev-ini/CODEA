@@ -17,8 +17,6 @@ export default function Footer() {
             </div>
             <p className="text-sm text-muted-foreground max-w-sm">
               © {currentYear} CODEA — Pan-African Architectural Intelligence.
-              <br />
-              Lagos • Nairobi • Accra • Cape Town • Kigali
             </p>
           </div>
           <nav className="flex flex-col gap-3 text-sm">
