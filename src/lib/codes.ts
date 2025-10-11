@@ -1,5 +1,4 @@
 import nigeriaData from './data/nigeria.json';
-import { getCountryCodes } from './countries';
 // Import other country data here in the future
 // import ghanaData from './data/ghana.json';
 
@@ -30,4 +29,12 @@ export const codeLibraries: Record<string, CodeData> = {
   // ghana: ghanaData, // Example for future expansion
 };
 
-const countryCodes = getCountryCodes();
+export function getCountryCodes(): [string, ...string[]] {
+  const codes = Object.keys(codeLibraries);
+  if (codes.length === 0) {
+    // Zod's `enum` requires at least one value.
+    // This is a fallback for when no countries are loaded, though it should not happen in practice.
+    return [''];
+  }
+  return codes as [string, ...string[]];
+}

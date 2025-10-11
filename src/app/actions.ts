@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { getCountryCodes } from '@/lib/countries';
+import { getCountryCodes } from '@/lib/codes';
 
 const precedentSearchSchema = z.object({
   concept: z.string().min(3),
