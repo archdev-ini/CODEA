@@ -1,14 +1,6 @@
 'use server';
 
 import { z } from 'zod';
-import {
-  semanticPrecedentSearch,
-  type SemanticPrecedentSearchOutput,
-} from '@/ai/flows/semantic-precedent-search';
-import {
-  answerCodeQuestion,
-  type AnswerCodeQuestionOutput,
-} from '@/ai/flows/answer-code-question';
 import { getCountryCodes } from '@/lib/countries';
 
 const precedentSearchSchema = z.object({
@@ -17,7 +9,7 @@ const precedentSearchSchema = z.object({
 
 type PrecedentSearchResponse = {
   success: boolean;
-  data?: SemanticPrecedentSearchOutput;
+  data?: any; //SemanticPrecedentSearchOutput;
   error?: string;
 };
 
@@ -34,12 +26,12 @@ export async function searchPrecedents(
   }
 
   try {
-    const results = await semanticPrecedentSearch({
-      concept: validatedFields.data.concept,
-    });
+    // const results = await semanticPrecedentSearch({
+    //   concept: validatedFields.data.concept,
+    // });
     return {
       success: true,
-      data: results,
+      data: { results: [] },
     };
   } catch (e) {
     console.error(e);
@@ -59,7 +51,7 @@ const codeQuestionSchema = z.object({
 
 type CodeQuestionResponse = {
   success: boolean;
-  data?: AnswerCodeQuestionOutput;
+  data?: any; //AnswerCodeQuestionOutput;
   error?: string;
 };
 
@@ -76,13 +68,13 @@ export async function askCodeQuestion(
   }
 
   try {
-    const results = await answerCodeQuestion({
-      question: validatedFields.data.question,
-      country: validatedFields.data.country,
-    });
+    // const results = await answerCodeQuestion({
+    //   question: validatedFields.data.question,
+    //   country: validatedFields.data.country,
+    // });
     return {
       success: true,
-      data: results,
+      data: { answer: 'AI is disabled.', relevant_articles: [] },
     };
   } catch (e) {
     console.error(e);
@@ -92,4 +84,40 @@ export async function askCodeQuestion(
       error: 'Failed to get an answer. Please try again later.',
     };
   }
+}
+
+const contributionSchema = z.object({
+  country: z.string().min(1, 'Country is required'),
+  section: z.string().min(1, 'Section is required'),
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  description: z.string().min(10, 'Description must be at least 10 characters'),
+  references: z.string().optional(),
+  tags: z.string().optional(),
+  contributorName: z.string().optional(),
+  contributorEmail: z.union([z.string().email(), z.literal('')]).optional(),
+});
+
+type ContributionResponse = {
+  success: boolean;
+  error?: string;
+};
+
+export async function submitContribution(
+  values: z.infer<typeof contributionSchema>
+): Promise<ContributionResponse> {
+  const validatedFields = contributionSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: 'Invalid input.',
+    };
+  }
+
+  // Simulate a successful submission
+  console.log('New contribution submitted:', validatedFields.data);
+
+  return {
+    success: true,
+  };
 }

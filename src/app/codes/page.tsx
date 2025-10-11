@@ -7,11 +7,17 @@ import OverviewHeader from '@/components/sections/codes/overview-header';
 import CommunityInsights from '@/components/sections/codes/community-insights';
 import FooterCta from '@/components/sections/codes/footer-cta';
 import SmartSearchResults from '@/components/sections/codes/smart-search-results';
-import type { AnswerCodeQuestionOutput } from '@/ai/flows/answer-code-question';
 import { askCodeQuestion } from '@/app/actions';
 import { Loader2 } from 'lucide-react';
 import { availableCountries, type Country } from '@/lib/countries';
 import CountryIndex from '@/components/sections/codes/country-index';
+
+// Kept for type reference, but AI is disabled.
+type AnswerCodeQuestionOutput = {
+  answer: string;
+  relevant_articles: any[];
+};
+
 
 export default function CodesPage() {
   const [searchTerm, setSearchTerm] = useState('');
