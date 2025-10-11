@@ -5,6 +5,10 @@ import {
   semanticPrecedentSearch,
   type SemanticPrecedentSearchOutput,
 } from '@/ai/flows/semantic-precedent-search';
+import {
+  answerCodeQuestion,
+  type AnswerCodeQuestionOutput,
+} from '@/ai/flows/answer-code-question';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -44,6 +48,46 @@ export async function searchPrecedents(
     return {
       success: false,
       error: 'Failed to perform search. Please try again later.',
+    };
+  }
+}
+
+const codeQuestionSchema = z.object({
+  question: z.string().min(10),
+});
+
+type CodeQuestionResponse = {
+  success: boolean;
+  data?: AnswerCodeQuestionOutput;
+  error?: string;
+};
+
+export async function askCodeQuestion(
+  values: z.infer<typeof codeQuestionSchema>
+): Promise<CodeQuestionResponse> {
+  const validatedFields = codeQuestionSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: 'Invalid input. Please ask a more detailed question.',
+    };
+  }
+
+  try {
+    const results = await answerCodeQuestion({
+      question: validatedFields.data.question,
+    });
+    return {
+      success: true,
+      data: results,
+    };
+  } catch (e) {
+    console.error(e);
+    // This is a user-facing error. Be careful what's exposed.
+    return {
+      success: false,
+      error: 'Failed to get an answer. Please try again later.',
     };
   }
 }

@@ -7,48 +7,64 @@ import OverviewHeader from '@/components/sections/codes/overview-header';
 import CountryIndex from '@/components/sections/codes/country-index';
 import CommunityInsights from '@/components/sections/codes/community-insights';
 import FooterCta from '@/components/sections/codes/footer-cta';
-import SearchResults from '@/components/sections/codes/search-results';
-import nigeriaData from '@/lib/data/nigeria.json';
-
-type Article = {
-  code_id: string;
-  title: string;
-  description: string;
-  requirements: string[];
-  references: string[];
-  keywords: string[];
-  notes?: string;
-  examples?: { context: string; application: string }[];
-  related_codes?: string[];
-};
+import SmartSearchResults from '@/components/sections/codes/smart-search-results';
+import type { AnswerCodeQuestionOutput } from '@/ai/flows/answer-code-question';
+import { askCodeQuestion } from '@/app/actions';
+import { Loader2 } from 'lucide-react';
 
 export default function CodesPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const allArticles: Article[] = nigeriaData.sections.flatMap(
-    (section) => section.articles
-  );
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] =
+    useState<AnswerCodeQuestionOutput | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredArticles = allArticles.filter((article) => {
-    const searchTermLower = searchTerm.toLowerCase();
-    return (
-      article.title.toLowerCase().includes(searchTermLower) ||
-      article.description.toLowerCase().includes(searchTermLower) ||
-      article.keywords.some((kw) => kw.toLowerCase().includes(searchTermLower))
-    );
-  });
+  const handleSearch = async (question: string) => {
+    if (!question) return;
+
+    setIsSearching(true);
+    setError(null);
+    setSearchResults(null);
+
+    const result = await askCodeQuestion({ question });
+
+    if (result.success && result.data) {
+      setSearchResults(result.data);
+    } else {
+      setError(result.error || 'An unexpected error occurred.');
+    }
+
+    setIsSearching(false);
+    setSearchTerm(question);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
-        <OverviewHeader searchTerm={searchTerm} onSearchTermChange={setSearchTerm} />
-        {searchTerm ? (
-          <SearchResults articles={filteredArticles} />
+        <OverviewHeader onSearch={handleSearch} isSearching={isSearching} />
+        {isSearching && (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        )}
+        {error && (
+            <div className="container mx-auto px-4 py-10 text-center">
+                <p className="text-destructive">{error}</p>
+            </div>
+        )}
+        {searchResults ? (
+          <SmartSearchResults
+            question={searchTerm}
+            results={searchResults}
+          />
         ) : (
-          <>
-            <CountryIndex />
-            <CommunityInsights />
-          </>
+          !isSearching && (
+            <>
+              <CountryIndex />
+              <CommunityInsights />
+            </>
+          )
         )}
         <FooterCta />
       </main>
