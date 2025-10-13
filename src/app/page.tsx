@@ -18,12 +18,12 @@ export default function Home() {
         <section id="tagline" className="py-16 md:py-20 bg-background">
           <div className="container mx-auto px-4 text-center">
             <Separator className="w-1/4 mx-auto" />
-            <p className="text-xl md:text-2xl font-medium text-muted-foreground mt-8">
+            <div className="text-xl md:text-2xl font-medium text-muted-foreground mt-8">
               <GradientText>
                 &ldquo;Architecture, Data, and Culture — finally in one
                 place.&rdquo;
               </GradientText>
-            </p>
+            </div>
             <Separator className="w-1/4 mx-auto mt-8" />
           </div>
         </section>
