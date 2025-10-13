@@ -1,61 +1,87 @@
 'use client';
 
-import React, { useRef, useEffect, ReactNode } from 'react';
+import React, { useEffect, useMemo, useRef, ReactNode, RefObject } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
 import './ScrollFloat.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ScrollFloatProps {
   children: ReactNode;
-  className?: string;
-  animation?: 'float-up' | 'float-down' | 'float-left' | 'float-right';
-  delay?: string; // e.g., '100ms'
+  scrollContainerRef?: RefObject<HTMLElement>;
+  containerClassName?: string;
+  textClassName?: string;
+  animationDuration?: number;
+  ease?: string;
+  scrollStart?: string;
+  scrollEnd?: string;
+  stagger?: number;
 }
 
 const ScrollFloat: React.FC<ScrollFloatProps> = ({
   children,
-  className,
-  animation = 'float-up',
-  delay,
+  scrollContainerRef,
+  containerClassName = '',
+  textClassName = '',
+  animationDuration = 1,
+  ease = 'back.inOut(2)',
+  scrollStart = 'center bottom+=50%',
+  scrollEnd = 'bottom bottom-=40%',
+  stagger = 0.03
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const splitText = useMemo(() => {
+    const text = typeof children === 'string' ? children : '';
+    return text.split('').map((char, index) => (
+      <span className="char" key={index}>
+        {char === ' ' ? '\u00A0' : char}
+      </span>
+    ));
+  }, [children]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          ref.current?.classList.add('is-visible');
-        } else {
-          // Optional: remove class to re-animate on scroll up/down
-          // ref.current?.classList.remove('is-visible');
-        }
+    const el = containerRef.current;
+    if (!el) return;
+
+    const scroller = scrollContainerRef && scrollContainerRef.current ? scrollContainerRef.current : window;
+
+    const charElements = el.querySelectorAll('.char');
+
+    gsap.fromTo(
+      charElements,
+      {
+        willChange: 'opacity, transform',
+        opacity: 0,
+        yPercent: 120,
+        scaleY: 2.3,
+        scaleX: 0.7,
+        transformOrigin: '50% 0%'
       },
       {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1, // Trigger when 10% of the element is visible
+        duration: animationDuration,
+        ease: ease,
+        opacity: 1,
+        yPercent: 0,
+        scaleY: 1,
+        scaleX: 1,
+        stagger: stagger,
+        scrollTrigger: {
+          trigger: el,
+          scroller,
+          start: scrollStart,
+          end: scrollEnd,
+          scrub: true
+        }
       }
     );
-
-    const currentRef = ref.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, []);
-
-  const style = delay ? { '--animation-delay': delay } : {};
+  }, [scrollContainerRef, animationDuration, ease, scrollStart, scrollEnd, stagger]);
 
   return (
-    <div
-      ref={ref}
-      className={`scroll-float ${animation} ${className || ''}`}
-      style={style as React.CSSProperties}
-    >
-      {children}
+    <div ref={containerRef} className={`scroll-float ${containerClassName}`}>
+      <span className={`scroll-float-text ${textClassName}`}>{splitText}</span>
     </div>
   );
 };

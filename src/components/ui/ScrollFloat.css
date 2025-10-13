@@ -1,32 +1,12 @@
 .scroll-float {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  transition-delay: var(--animation-delay, 0s);
+  clip-path: inset(0);
 }
 
-.scroll-float.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+.scroll-float-text {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.scroll-float.float-up {
-  transform: translateY(20px);
-}
-
-.scroll-float.float-down {
-  transform: translateY(-20px);
-}
-
-.scroll-float.float-left {
-  transform: translateX(20px);
-}
-
-.scroll-float.float-right {
-  transform: translateX(-20px);
-}
-
-.scroll-float.float-left.is-visible,
-.scroll-float.float-right.is-visible {
-  transform: translateX(0);
+.char {
+  display: inline-block;
 }
