@@ -1,0 +1,29 @@
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.spotlight-card .spotlight-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--spotlight-x) var(--spotlight-y),
+    hsla(0, 0%, 100%, 0.1) 0%,
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.spotlight-card:hover .spotlight-effect {
+  opacity: 1;
+}
