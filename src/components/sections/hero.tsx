@@ -4,20 +4,18 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import GradientText from '@/components/ui/gradient-text';
+import DarkVeil from '@/components/ui/DarkVeil';
 
 export default function Hero() {
   return (
     <section className="relative py-20 md:py-32 bg-background overflow-hidden min-h-[60vh] md:min-h-screen flex items-center">
-      <div className="absolute inset-0 z-0 opacity-5">
-        {/* Subtle grid lines */}
-        <div
-          className="absolute inset-0 bg-repeat"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)',
-            backgroundSize: '2rem 2rem',
-          }}
-        ></div>
+      <div className="absolute inset-0 z-0">
+        <DarkVeil
+          speed={0.3}
+          resolutionScale={0.5}
+          warpAmount={0.2}
+          noiseIntensity={0.05}
+        />
       </div>
       
       <div className="container mx-auto text-center px-4 relative z-10">
