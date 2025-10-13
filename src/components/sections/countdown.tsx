@@ -8,7 +8,7 @@ type CountdownProps = {
   date: Date;
 };
 
-type TimeUnit = 'Days' | 'Hours' | 'Minutes' | 'Seconds';
+type TimeUnit = 'Days' | 'Hours' | 'Minutes';
 
 const Countdown: React.FC<CountdownProps> = ({ date }) => {
   const [timeLeft, setTimeLeft] = useState({
@@ -36,7 +36,7 @@ const Countdown: React.FC<CountdownProps> = ({ date }) => {
     setTimeLeft(calculateTimeLeft());
 
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeleft());
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer);
