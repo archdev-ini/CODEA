@@ -10,7 +10,7 @@ export default function Statement() {
         <div className="text-center max-w-3xl mx-auto">
           <h2 className="mb-6 text-3xl md:text-4xl font-bold text-primary font-headline !leading-tight">
             <ScrollFloat>
-              Architecture has no borders — only contexts.
+              Architecture has no borders
             </ScrollFloat>
           </h2>
           <p className="text-lg text-muted-foreground">
