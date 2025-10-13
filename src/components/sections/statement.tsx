@@ -1,3 +1,5 @@
+import ScrollFloat from '@/components/ui/ScrollFloat';
+
 export default function Statement() {
   return (
     <section
@@ -6,9 +8,12 @@ export default function Statement() {
     >
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6 font-headline">
+          <ScrollFloat
+            containerClassName="mb-6"
+            textClassName="text-3xl md:text-4xl font-bold text-primary font-headline !leading-tight"
+          >
             Architecture has no borders — only contexts.
-          </h2>
+          </ScrollFloat>
           <p className="text-lg text-muted-foreground">
             From Lagos to Nairobi, Accra to Addis, architects face shared
             challenges shaped by climate, culture, and regulation. CODEA
