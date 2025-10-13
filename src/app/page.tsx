@@ -1,6 +1,8 @@
-import { Library } from 'lucide-react';
+import { Library, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import Countdown from '@/components/sections/countdown';
 import GradientText from '@/components/ui/gradient-text';
+import { Button } from '@/components/ui/button';
 import config from '@/lib/config.json';
 
 export default function Home() {
@@ -20,9 +22,21 @@ export default function Home() {
             <GradientText>Launching Soon</GradientText>
           </h2>
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
-            Our platform for Pan-African architectural intelligence is under construction.
+            Our platform for Pan-African architectural intelligence is under
+            construction.
           </p>
           <Countdown date={launchDate} />
+          <div className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4">
+            <Button size="lg" asChild>
+              <Link href="/about">
+                <ArrowRight className="mr-2 h-5 w-5 -rotate-45" />
+                About CODEA
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/codes">Explore the Library</Link>
+            </Button>
+          </div>
         </div>
       </main>
     </div>
