@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useInView, useMotionValue, useSpring } from 'motion/react';
+import { useInView, useMotionValue, useSpring } from 'motion';
 
 interface CountUpProps {
   to: number;
@@ -21,7 +21,7 @@ export default function CountUp({
   from = 0,
   direction = 'up',
   delay = 0,
-  duration = 2,
+  duration = 0.8,
   className = '',
   startWhen = true,
   separator = '',
@@ -56,7 +56,7 @@ export default function CountUp({
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.textContent = String(direction === 'down' ? to : from);
+      ref.current.textContent = String(direction === 'down' ? to : from).padStart(2, '0');
     }
   }, [from, to, direction]);
 
@@ -93,11 +93,12 @@ export default function CountUp({
 
         const options: Intl.NumberFormatOptions = {
           useGrouping: !!separator,
+          minimumIntegerDigits: 2,
           minimumFractionDigits: hasDecimals ? maxDecimals : 0,
           maximumFractionDigits: hasDecimals ? maxDecimals : 0
         };
         
-        const formattedNumber = new Intl.NumberFormat('en-US', options).format(latest).padStart(2, '0');
+        const formattedNumber = new Intl.NumberFormat('en-US', options).format(latest);
 
         ref.current.textContent = separator ? formattedNumber.replace(/,/g, separator) : formattedNumber;
       }
