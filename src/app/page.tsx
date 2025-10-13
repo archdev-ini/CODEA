@@ -1,35 +1,29 @@
-import Header from '@/components/layout/header';
-import Footer from '@/components/layout/footer';
-import Hero from '@/components/sections/hero';
-import Statement from '@/components/sections/statement';
-import WhatWeDo from '@/components/sections/what-we-do';
-import CTA from '@/components/sections/cta';
-import { Separator } from '@/components/ui/separator';
+import { Library } from 'lucide-react';
+import Countdown from '@/components/sections/countdown';
 import GradientText from '@/components/ui/gradient-text';
 
 export default function Home() {
+  const launchDate = new Date('2026-02-01T00:00:00');
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <Header />
-      <main className="flex-grow">
-        <Hero />
-        <Statement />
-        <WhatWeDo />
-        <section id="tagline" className="py-16 md:py-20 bg-background">
-          <div className="container mx-auto px-4 text-center">
-            <Separator className="w-1/4 mx-auto" />
-            <div className="text-xl md:text-2xl font-medium text-muted-foreground mt-8">
-              <GradientText>
-                &ldquo;Architecture, Data, and Culture — finally in one
-                place.&rdquo;
-              </GradientText>
-            </div>
-            <Separator className="w-1/4 mx-auto mt-8" />
+      <main className="flex-grow flex items-center justify-center">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <Library className="h-10 w-10 text-primary" />
+            <h1 className="text-4xl font-semibold text-primary tracking-tight">
+              CODEA
+            </h1>
           </div>
-        </section>
-        <CTA />
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-primary mb-4 font-headline">
+            <GradientText>Launching Soon</GradientText>
+          </h2>
+          <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
+            Our platform for Pan-African architectural intelligence is under construction.
+          </p>
+          <Countdown date={launchDate} />
+        </div>
       </main>
-      <Footer />
     </div>
   );
 }
