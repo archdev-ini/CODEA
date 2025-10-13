@@ -3,6 +3,7 @@ import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import ContributionForm from '@/components/sections/community/contribution-form';
 
 export default function CommunityPage() {
   return (
@@ -19,11 +20,16 @@ export default function CommunityPage() {
                 </p>
                  <div className="mt-8">
                     <Button size="lg" asChild>
-                        <Link href="/community">Contribute Knowledge</Link>
+                        <Link href="#contribute">Contribute Knowledge</Link>
                     </Button>
                 </div>
             </div>
         </section>
+        
+        <section id="contribute">
+          <ContributionForm />
+        </section>
+
         <section id="tagline" className="py-16 md:py-20 bg-background">
           <div className="container mx-auto px-4 text-center">
             <Separator className="w-1/4 mx-auto" />

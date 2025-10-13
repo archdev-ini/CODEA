@@ -7,7 +7,7 @@ import GradientText from '@/components/ui/gradient-text';
 
 export default function Hero() {
   return (
-    <section className="relative py-20 md:py-32 bg-background overflow-hidden min-h-screen flex items-center">
+    <section className="relative py-20 md:py-32 bg-background overflow-hidden min-h-[60vh] md:min-h-screen flex items-center">
       <div className="absolute inset-0 z-0 opacity-5">
         {/* Subtle grid lines */}
         <div
@@ -31,7 +31,7 @@ export default function Hero() {
           intelligence across Africa. When you receive a new project, this is
           where you begin.
         </p>
-        <div className="flex justify-center items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button size="lg" asChild>
             <Link href="/about">
               <ArrowRight className="mr-2 h-5 w-5 -rotate-45" />

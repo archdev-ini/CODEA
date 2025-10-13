@@ -12,7 +12,7 @@ export default function CTA() {
           Begin with the codes, precedents, and principles that matter. CODEA is
           where research meets design intent.
         </p>
-        <div className="flex justify-center items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button size="lg" asChild>
             <Link href="/codes">Explore Code Library</Link>
           </Button>

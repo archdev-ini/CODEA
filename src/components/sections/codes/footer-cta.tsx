@@ -10,7 +10,7 @@ export default function FooterCta() {
         <p className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8">
           Help us fill the gaps and visualize Africa’s codes together.
         </p>
-        <div className="flex justify-center items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button size="lg">Submit Local Regulation</Button>
           <Button size="lg" variant="outline">
             Join Discord

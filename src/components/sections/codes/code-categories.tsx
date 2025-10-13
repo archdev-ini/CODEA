@@ -74,13 +74,15 @@ export default function CodeCategories() {
     <section className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
         <Tabs defaultValue="structural" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
-            {categories.map((cat) => (
-              <TabsTrigger key={cat.value} value={cat.value} className='py-2 data-[state=active]:shadow-lg'>
-                {cat.icon} {cat.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          <div className="overflow-x-auto pb-2">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto min-w-[600px] md:min-w-full">
+              {categories.map((cat) => (
+                <TabsTrigger key={cat.value} value={cat.value} className='py-2 data-[state=active]:shadow-lg'>
+                  {cat.icon} {cat.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
           {categories.map((cat) => (
             <TabsContent key={cat.value} value={cat.value}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
