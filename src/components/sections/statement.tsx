@@ -8,12 +8,11 @@ export default function Statement() {
     >
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto">
-          <ScrollFloat
-            containerClassName="mb-6"
-            textClassName="text-3xl md:text-4xl font-bold text-primary font-headline !leading-tight"
-          >
-            Architecture has no borders — only contexts.
-          </ScrollFloat>
+          <h2 className="mb-6 text-3xl md:text-4xl font-bold text-primary font-headline !leading-tight">
+            <ScrollFloat>
+              Architecture has no borders — only contexts.
+            </ScrollFloat>
+          </h2>
           <p className="text-lg text-muted-foreground">
             From Lagos to Nairobi, Accra to Addis, architects face shared
             challenges shaped by climate, culture, and regulation. CODEA
