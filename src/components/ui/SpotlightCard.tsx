@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useRef, useState, useEffect, ReactNode } from 'react';
 import './SpotlightCard.css';
 
