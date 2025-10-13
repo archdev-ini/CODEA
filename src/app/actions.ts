@@ -85,39 +85,3 @@ export async function askCodeQuestion(
     };
   }
 }
-
-const contributionSchema = z.object({
-  country: z.string().min(1, 'Country is required'),
-  section: z.string().min(1, 'Section is required'),
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  references: z.string().optional(),
-  tags: z.string().optional(),
-  contributorName: z.string().optional(),
-  contributorEmail: z.union([z.string().email(), z.literal('')]).optional(),
-});
-
-type ContributionResponse = {
-  success: boolean;
-  error?: string;
-};
-
-export async function submitContribution(
-  values: z.infer<typeof contributionSchema>
-): Promise<ContributionResponse> {
-  const validatedFields = contributionSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return {
-      success: false,
-      error: 'Invalid input.',
-    };
-  }
-
-  // Simulate a successful submission
-  console.log('New contribution submitted:', validatedFields.data);
-
-  return {
-    success: true,
-  };
-}
