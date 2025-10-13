@@ -1,50 +1,35 @@
 import React, { useRef, useState, useEffect, ReactNode } from 'react';
 import './SpotlightCard.css';
+import { cn } from '@/lib/utils';
 
 interface SpotlightCardProps {
   children: ReactNode;
   className?: string;
+  spotlightColor?: `rgba(${number}, ${number}, ${number}, ${number})`;
 }
 
 const SpotlightCard: React.FC<SpotlightCardProps> = ({
   children,
   className = '',
+  spotlightColor = 'rgba(255, 255, 255, 0.05)'
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const divRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
+  const handleMouseMove: React.MouseEventHandler<HTMLDivElement> = e => {
+    if (!divRef.current) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = card.getBoundingClientRect();
-      setCoords({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-    };
+    const rect = divRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    card.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      card.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
+    divRef.current.style.setProperty('--mouse-x', `${x}px`);
+    divRef.current.style.setProperty('--mouse-y', `${y}px`);
+    divRef.current.style.setProperty('--spotlight-color', spotlightColor);
+  };
 
   return (
-    <div
-      ref={cardRef}
-      className={`spotlight-card ${className}`}
-      style={
-        {
-          '--spotlight-x': `${coords.x}px`,
-          '--spotlight-y': `${coords.y}px`,
-        } as React.CSSProperties
-      }
-    >
+    <div ref={divRef} onMouseMove={handleMouseMove} className={cn('card-spotlight', className)}>
       {children}
-      <div className="spotlight-effect" />
     </div>
   );
 };
