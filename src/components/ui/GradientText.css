@@ -1,0 +1,13 @@
+.animated-gradient-text .text-content {
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: gradient-text-flow ease infinite;
+}
+
+@keyframes gradient-text-flow {
+  to {
+    background-position: 200% center;
+  }
+}

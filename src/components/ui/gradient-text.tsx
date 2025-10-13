@@ -1,26 +1,32 @@
-import { cn } from "@/lib/utils";
-import React from "react";
+import './GradientText.css';
+import React, { ReactNode } from 'react';
 
-const GradientText = React.forwardRef<
-  HTMLSpanElement,
-  {
-    children: React.ReactNode;
-    className?: string;
-  }
->(({ children, className }, ref) => {
+interface GradientTextProps {
+  children: ReactNode;
+  className?: string;
+  colors?: string[];
+  animationSpeed?: number;
+  showBorder?: boolean;
+}
+
+export default function GradientText({
+  children,
+  className = '',
+  colors = ['#E0E0E0', '#BDBDBD', '#E0E0E0', '#BDBDBD', '#E0E0E0'],
+  animationSpeed = 10,
+  showBorder = false,
+}: GradientTextProps) {
+  const gradientStyle = {
+    backgroundImage: `linear-gradient(to right, ${colors.join(', ')})`,
+    animationDuration: `${animationSpeed}s`,
+  };
+
   return (
-    <span
-      ref={ref}
-      className={cn(
-        "bg-gradient-to-r from-primary to-primary/70 text-transparent bg-clip-text",
-        className
-      )}
-    >
-      {children}
-    </span>
+    <div className={`animated-gradient-text ${className}`}>
+      {showBorder && <div className="gradient-overlay" style={gradientStyle}></div>}
+      <div className="text-content" style={gradientStyle}>
+        {children}
+      </div>
+    </div>
   );
-});
-
-GradientText.displayName = "GradientText";
-
-export default GradientText;
+}
