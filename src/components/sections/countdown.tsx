@@ -45,7 +45,6 @@ const Countdown: React.FC<CountdownProps> = ({ date }) => {
     { unit: 'Days', value: timeLeft.days },
     { unit: 'Hours', value: timeLeft.hours },
     { unit: 'Minutes', value: timeLeft.minutes },
-    { unit: 'Seconds', value: timeLeft.seconds },
   ];
 
   return (
@@ -67,6 +66,17 @@ const Countdown: React.FC<CountdownProps> = ({ date }) => {
           </span>
         </div>
       ))}
+      <div
+          key="Seconds"
+          className="flex flex-col items-center justify-center bg-card p-4 md:p-6 rounded-lg w-24 h-24 md:w-32 md:h-32 border"
+        >
+          <div className="text-3xl md:text-5xl font-bold text-primary tabular-nums">
+            <span>{String(timeLeft.seconds).padStart(2, '0')}</span>
+          </div>
+          <span className="text-xs md:text-sm text-muted-foreground uppercase tracking-widest">
+            Seconds
+          </span>
+        </div>
     </div>
   );
 };
