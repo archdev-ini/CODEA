@@ -1,4 +1,5 @@
 import { Layers, BookOpen, Globe } from 'lucide-react';
+import SpotlightCard from '@/components/ui/SpotlightCard';
 
 const layers = [
   {
@@ -32,7 +33,10 @@ export default function TheLayers() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {layers.map((layer, index) => (
-            <div key={index} className="p-6 rounded-lg border bg-card text-center">
+            <SpotlightCard
+              key={index}
+              className="bg-card text-center"
+            >
               <div className="flex justify-center items-center gap-4 mb-4">
                 {layer.icon}
               </div>
@@ -40,7 +44,7 @@ export default function TheLayers() {
                 {layer.title}
               </h3>
               <p className="text-muted-foreground">{layer.description}</p>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       </div>

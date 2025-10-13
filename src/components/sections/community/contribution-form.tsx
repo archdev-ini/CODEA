@@ -15,7 +15,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -33,6 +32,7 @@ import {
 import { Loader2, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { submitContribution } from '@/app/actions';
+import SpotlightCard from '@/components/ui/SpotlightCard';
 
 const contributionSchema = z.object({
   country: z.string().min(1, 'Country is required'),
@@ -90,7 +90,7 @@ export default function ContributionForm() {
   return (
     <section className="py-20 md:py-28 bg-background">
       <div className="container mx-auto px-4">
-        <Card className="max-w-3xl mx-auto">
+        <SpotlightCard className="max-w-3xl mx-auto bg-card">
           <CardHeader>
             <CardTitle>Submit a Contribution</CardTitle>
             <CardDescription>
@@ -325,7 +325,7 @@ export default function ContributionForm() {
               </form>
             </Form>
           </CardContent>
-        </Card>
+        </SpotlightCard>
       </div>
     </section>
   );

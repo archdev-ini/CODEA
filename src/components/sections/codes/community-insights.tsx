@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import SpotlightCard from '@/components/ui/SpotlightCard';
 
 const insights: { author: string; note: string }[] = [];
 
@@ -18,7 +19,7 @@ export default function CommunityInsights() {
         {insights.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {insights.map((insight, index) => (
-              <Card key={index} className="bg-card">
+              <SpotlightCard key={index} className="bg-card">
                 <CardContent className="p-6">
                   <blockquote className="text-foreground italic mb-4">
                     {insight.note}
@@ -27,7 +28,7 @@ export default function CommunityInsights() {
                     — {insight.author}
                   </p>
                 </CardContent>
-              </Card>
+              </SpotlightCard>
             ))}
           </div>
         ) : (

@@ -1,11 +1,11 @@
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Layers, BookOpen, Globe } from 'lucide-react';
+import SpotlightCard from '@/components/ui/SpotlightCard';
 
 const items = [
   {
@@ -40,7 +40,7 @@ export default function WhatWeDo() {
 
         <div className="grid md:grid-cols-3 gap-8 mt-12">
           {items.map((item, index) => (
-            <Card
+            <SpotlightCard
               key={index}
               className="bg-card border-none shadow-none text-center"
             >
@@ -55,7 +55,7 @@ export default function WhatWeDo() {
                   {item.description}
                 </CardDescription>
               </CardContent>
-            </Card>
+            </SpotlightCard>
           ))}
         </div>
       </div>

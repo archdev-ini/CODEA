@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import SpotlightCard from '@/components/ui/SpotlightCard';
 import Link from 'next/link';
 
 const countries: { flag: string; name: string; stats: string }[] = [];
@@ -16,16 +16,16 @@ export default function CountryIndex() {
         {countries.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {countries.map((country) => (
-              <Card
+              <SpotlightCard
                 key={country.name}
-                className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+                className="text-center hover:shadow-lg transition-shadow cursor-pointer"
               >
                 <div className="text-5xl mb-4">{country.flag}</div>
                 <h3 className="font-semibold text-lg text-foreground">
                   {country.name}
                 </h3>
                 <p className="text-sm text-muted-foreground">{country.stats}</p>
-              </Card>
+              </SpotlightCard>
             ))}
           </div>
         ) : (

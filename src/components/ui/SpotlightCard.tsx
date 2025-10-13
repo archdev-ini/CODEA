@@ -1,4 +1,6 @@
-import React, { useRef, useState, useEffect, ReactNode } from 'react';
+'use client';
+
+import React, { useRef, ReactNode } from 'react';
 import './SpotlightCard.css';
 import { cn } from '@/lib/utils';
 

@@ -4,7 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Building,
   ShieldCheck,
@@ -14,6 +14,7 @@ import {
   Construction,
   DoorOpen,
 } from 'lucide-react';
+import SpotlightCard from '@/components/ui/SpotlightCard';
 
 const categories = [
   {
@@ -84,7 +85,7 @@ export default function CodeCategories() {
             <TabsContent key={cat.value} value={cat.value}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                 {cat.summaries.map((summary) => (
-                  <Card key={summary.title}>
+                  <SpotlightCard key={summary.title}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
                         {summary.title}
@@ -96,7 +97,7 @@ export default function CodeCategories() {
                         View standards for {summary.title.toLowerCase()}
                       </p>
                     </CardContent>
-                  </Card>
+                  </SpotlightCard>
                 ))}
               </div>
             </TabsContent>
