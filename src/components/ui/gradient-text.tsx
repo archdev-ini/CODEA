@@ -12,13 +12,13 @@ interface GradientTextProps {
 export default function GradientText({
   children,
   className = '',
-  colors = ['#E0E0E0', '#BDBDBD', '#E0E0E0', '#BDBDBD', '#E0E0E0'],
-  animationSpeed = 10,
-  showBorder = false,
+  colors = ['#40ffaa', '#4079ff', '#40ffaa', '#4079ff', '#40ffaa'],
+  animationSpeed = 8,
+  showBorder = false
 }: GradientTextProps) {
   const gradientStyle = {
     backgroundImage: `linear-gradient(to right, ${colors.join(', ')})`,
-    animationDuration: `${animationSpeed}s`,
+    animationDuration: `${animationSpeed}s`
   };
 
   return (
