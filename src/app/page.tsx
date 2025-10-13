@@ -33,9 +33,6 @@ export default function Home() {
                 About CODEA
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/codes">Explore the Library</Link>
-            </Button>
           </div>
         </div>
       </main>
