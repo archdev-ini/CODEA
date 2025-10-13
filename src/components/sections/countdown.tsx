@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import CountUp from '@/components/ui/CountUp';
+import GradientText from '@/components/ui/gradient-text';
 
 type CountdownProps = {
   date: Date;
@@ -35,7 +36,7 @@ const Countdown: React.FC<CountdownProps> = ({ date }) => {
     setTimeLeft(calculateTimeLeft());
 
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      setTimeLeft(calculateTimeleft());
     }, 1000);
 
     return () => clearInterval(timer);
@@ -55,11 +56,9 @@ const Countdown: React.FC<CountdownProps> = ({ date }) => {
           className="flex flex-col items-center justify-center bg-card p-4 md:p-6 rounded-lg w-24 h-24 md:w-32 md:h-32 border"
         >
           <div className="text-3xl md:text-5xl font-bold text-primary tabular-nums">
-            <CountUp
-              to={value}
-              duration={0.8}
-              delay={0}
-            />
+            <GradientText>
+              <CountUp to={value} duration={0.8} />
+            </GradientText>
           </div>
           <span className="text-xs md:text-sm text-muted-foreground uppercase tracking-widest">
             {unit}
@@ -67,16 +66,18 @@ const Countdown: React.FC<CountdownProps> = ({ date }) => {
         </div>
       ))}
       <div
-          key="Seconds"
-          className="flex flex-col items-center justify-center bg-card p-4 md:p-6 rounded-lg w-24 h-24 md:w-32 md:h-32 border"
-        >
-          <div className="text-3xl md:text-5xl font-bold text-primary tabular-nums">
+        key="Seconds"
+        className="flex flex-col items-center justify-center bg-card p-4 md:p-6 rounded-lg w-24 h-24 md:w-32 md:h-32 border"
+      >
+        <div className="text-3xl md:text-5xl font-bold text-primary tabular-nums">
+          <GradientText>
             <span>{String(timeLeft.seconds).padStart(2, '0')}</span>
-          </div>
-          <span className="text-xs md:text-sm text-muted-foreground uppercase tracking-widest">
-            Seconds
-          </span>
+          </GradientText>
         </div>
+        <span className="text-xs md:text-sm text-muted-foreground uppercase tracking-widest">
+          Seconds
+        </span>
+      </div>
     </div>
   );
 };
