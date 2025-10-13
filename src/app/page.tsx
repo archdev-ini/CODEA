@@ -5,6 +5,7 @@ import Statement from '@/components/sections/statement';
 import WhatWeDo from '@/components/sections/what-we-do';
 import CTA from '@/components/sections/cta';
 import { Separator } from '@/components/ui/separator';
+import GradientText from '@/components/ui/gradient-text';
 
 export default function Home() {
   return (
@@ -18,8 +19,10 @@ export default function Home() {
           <div className="container mx-auto px-4 text-center">
             <Separator className="w-1/4 mx-auto" />
             <p className="text-xl md:text-2xl font-medium text-muted-foreground mt-8">
-              &ldquo;Architecture, Data, and Culture — finally in one
-              place.&rdquo;
+              <GradientText>
+                &ldquo;Architecture, Data, and Culture — finally in one
+                place.&rdquo;
+              </GradientText>
             </p>
             <Separator className="w-1/4 mx-auto mt-8" />
           </div>
