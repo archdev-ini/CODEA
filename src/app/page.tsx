@@ -1,9 +1,10 @@
 import { Library } from 'lucide-react';
 import Countdown from '@/components/sections/countdown';
 import GradientText from '@/components/ui/gradient-text';
+import config from '@/lib/config.json';
 
 export default function Home() {
-  const launchDate = new Date('2026-02-01T00:00:00');
+  const launchDate = new Date(config.launchDate);
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
