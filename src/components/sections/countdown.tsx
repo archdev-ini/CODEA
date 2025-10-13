@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import CountUp from '@/components/ui/CountUp';
 
 type CountdownProps = {
   date: Date;
@@ -54,9 +55,13 @@ const Countdown: React.FC<CountdownProps> = ({ date }) => {
           key={unit}
           className="flex flex-col items-center justify-center bg-card p-4 md:p-6 rounded-lg w-24 h-24 md:w-32 md:h-32 border"
         >
-          <span className="text-3xl md:text-5xl font-bold text-primary tabular-nums">
-            {String(value).padStart(2, '0')}
-          </span>
+          <div className="text-3xl md:text-5xl font-bold text-primary tabular-nums">
+            <CountUp
+              to={value}
+              duration={0.8}
+              delay={0}
+            />
+          </div>
           <span className="text-xs md:text-sm text-muted-foreground uppercase tracking-widest">
             {unit}
           </span>
