@@ -32,8 +32,15 @@ export default function CommunityInsights() {
             ))}
           </div>
         ) : (
-          <div className="text-center text-muted-foreground">
-            <p>No community insights have been added yet.</p>
+          <div className="text-center text-muted-foreground border border-dashed rounded-lg p-12">
+            <h3 className="text-lg font-medium text-foreground mb-2">No insights yet. Be the first to contribute.</h3>
+            <p className="mb-6">Share your knowledge, field notes, or a relevant case study.</p>
+            <Button asChild>
+              <Link href="/community">
+                <Plus className="mr-2 h-4 w-4" />
+                Contribute Insight
+              </Link>
+            </Button>
           </div>
         )}
       </div>

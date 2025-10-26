@@ -1,4 +1,4 @@
-import { Library } from 'lucide-react';
+import { Library, Users } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Footer() {
@@ -32,6 +32,12 @@ export default function Footer() {
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Code Library
+            </Link>
+             <Link
+              href="/community"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Community
             </Link>
           </nav>
           <nav className="flex flex-col gap-3 text-sm">

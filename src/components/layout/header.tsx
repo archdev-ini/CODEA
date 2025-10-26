@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Library, Menu } from 'lucide-react';
+import { Library, Menu, Users } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -52,6 +52,11 @@ export default function Header() {
                   </Link>
                 </SheetClose>
                  <SheetClose asChild>
+                  <Link href="/community" className="text-lg">
+                    Community
+                  </Link>
+                </SheetClose>
+                 <SheetClose asChild>
                   <Link href="/admin" className="text-lg">
                     Admin
                   </Link>
@@ -66,6 +71,9 @@ export default function Header() {
             </Button>
             <Button variant="link" asChild>
               <Link href="/codes">Codes</Link>
+            </Button>
+            <Button variant="link" asChild>
+              <Link href="/community">Community</Link>
             </Button>
             <Button variant="link" asChild>
               <Link href="/admin">Admin</Link>
