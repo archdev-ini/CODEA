@@ -5,6 +5,7 @@ export type Country = {
   label: string;
 };
 
+// This function is deprecated and will be removed. Jurisdictions are now fetched from Firestore.
 // We can't dynamically import in this environment, so we manage the list here.
 // When a new country data file is added in `lib/codes.ts`, it must be added to this list.
 const countryDataSources = ['nigeria'];
@@ -16,6 +17,7 @@ function toTitleCase(str: string) {
   );
 }
 
+// This function is deprecated and will be removed. Jurisdictions are now fetched from Firestore.
 export function availableCountries(): Country[] {
   return getCountryCodes()
     .filter((code) => code) // Filter out empty fallback string

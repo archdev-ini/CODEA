@@ -31,6 +31,24 @@
         "keywords": { "type": "array", "items": { "type": "string" } }
       },
       "required": ["codeId", "jurisdictionId", "codeName", "title", "description"]
+    },
+    "CommunityInsight": {
+      "title": "Community Insight",
+      "type": "object",
+      "description": "A contribution from a community member, such as a field note, observation, or case study.",
+      "properties": {
+        "jurisdictionId": { "type": "string", "description": "The ID of the jurisdiction this insight relates to." },
+        "section": { "type": "string", "description": "The relevant code section (e.g., 'fire-safety')." },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "references": { "type": "string", "description": "Source citations or URLs." },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "contributorName": { "type": "string" },
+        "contributorEmail": { "type": "string", "format": "email" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"], "default": "PENDING" }
+      },
+      "required": ["jurisdictionId", "section", "title", "description", "createdAt"]
     }
   },
   "auth": {
@@ -47,6 +65,10 @@
     "/articles/{articleId}": {
       "schema": { "$ref": "#/entities/CodeArticle" },
       "description": "Master collection of all code articles, linked to jurisdictions."
+    },
+    "/insights/{insightId}": {
+      "schema": { "$ref": "#/entities/CommunityInsight" },
+      "description": "Collection of community-submitted insights and observations."
     }
   }
 }

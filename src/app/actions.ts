@@ -40,3 +40,31 @@ export async function addCodeArticle(article: CodeArticle) {
     return { success: false, error: error.message };
   }
 }
+
+type Contribution = {
+  country: string;
+  section: string;
+  title: string;
+  description: string;
+  references?: string;
+  tags?: string;
+  contributorName?: string;
+  contributorEmail?: string;
+};
+
+export async function submitContribution(contribution: Contribution) {
+  try {
+    const { country, tags, ...rest } = contribution;
+    await adminDb.collection('insights').add({
+      ...rest,
+      jurisdictionId: country, // Remapping country to jurisdictionId
+      tags: tags ? tags.split(',').map((tag) => tag.trim()) : [],
+      createdAt: new Date().toISOString(),
+      status: 'PENDING',
+    });
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error submitting contribution:', error);
+    return { success: false, error: error.message };
+  }
+}

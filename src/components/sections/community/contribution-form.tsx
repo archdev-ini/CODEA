@@ -32,13 +32,17 @@ import {
 import { Loader2, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import SpotlightCard from '@/components/ui/SpotlightCard';
-import { availableCountries } from '@/lib/countries';
+import { collection, query } from 'firebase/firestore';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { submitContribution } from '@/app/actions';
 
 const contributionSchema = z.object({
   country: z.string().min(1, 'Country is required'),
   section: z.string().min(1, 'Section is required'),
   title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
+  description: z
+    .string()
+    .min(10, 'Description must be at least 10 characters'),
   references: z.string().optional(),
   tags: z.string().optional(),
   contributorName: z.string().optional(),
@@ -47,10 +51,22 @@ const contributionSchema = z.object({
 
 type ContributionFormValues = z.infer<typeof contributionSchema>;
 
+type Jurisdiction = {
+  id: string;
+  name: string;
+};
+
 export default function ContributionForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const countries = availableCountries();
+  const firestore = useFirestore();
+
+  const jurisdictionsQuery = useMemoFirebase(
+    () => query(collection(firestore, 'jurisdictions')),
+    [firestore]
+  );
+  const { data: jurisdictions } =
+    useCollection<Jurisdiction>(jurisdictionsQuery);
 
   const form = useForm<ContributionFormValues>({
     resolver: zodResolver(contributionSchema),
@@ -68,17 +84,24 @@ export default function ContributionForm() {
 
   async function onSubmit(data: ContributionFormValues) {
     setIsLoading(true);
-    // This is a placeholder for the server action.
-    // We will implement the `submitContribution` action next.
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log(data);
+    const result = await submitContribution(data);
     setIsLoading(false);
 
-    toast({
-      title: 'Contribution Submitted',
-      description: 'Thank you! Your contribution is pending review.',
-    });
-    form.reset();
+    if (result.success) {
+      toast({
+        title: 'Contribution Submitted',
+        description: 'Thank you! Your contribution is pending review.',
+      });
+      form.reset();
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Submission Failed',
+        description:
+          result.error ||
+          'An error occurred while submitting your contribution.',
+      });
+    }
   }
 
   return (
@@ -115,9 +138,9 @@ export default function ContributionForm() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {countries.map((country) => (
-                              <SelectItem key={country.value} value={country.value}>
-                                {country.label}
+                            {jurisdictions?.map((j) => (
+                              <SelectItem key={j.id} value={j.id}>
+                                {j.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
