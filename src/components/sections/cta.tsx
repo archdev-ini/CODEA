@@ -16,9 +16,6 @@ export default function CTA() {
           <Button size="lg" asChild>
             <Link href="/codes">Explore Code Library</Link>
           </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link href="/community">Contribute Knowledge</Link>
-          </Button>
         </div>
       </div>
     </section>

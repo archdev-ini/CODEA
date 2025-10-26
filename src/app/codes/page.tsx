@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import OverviewHeader from '@/components/sections/codes/overview-header';
-import CommunityInsights from '@/components/sections/codes/community-insights';
 import FooterCta from '@/components/sections/codes/footer-cta';
 import SmartSearchResults from '@/components/sections/codes/smart-search-results';
 import { askCodeQuestion } from '@/app/actions';
@@ -97,7 +96,6 @@ export default function CodesPage() {
           !isSearching && (
             <>
               <CountryIndex />
-              <CommunityInsights />
             </>
           )
         )}

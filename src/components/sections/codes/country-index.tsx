@@ -30,14 +30,9 @@ export default function CountryIndex() {
           </div>
         ) : (
           <div className="text-center text-muted-foreground">
-            <p>No countries have been added yet. Contribute to add one!</p>
+            <p>No countries have been added yet.</p>
           </div>
         )}
-        <div className="text-center mt-12">
-          <Button variant="outline" asChild>
-            <Link href="/community">Add My Country</Link>
-          </Button>
-        </div>
       </div>
     </section>
   );

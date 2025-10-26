@@ -36,14 +36,6 @@ export default function CommunityInsights() {
             <p>No community insights have been added yet.</p>
           </div>
         )}
-        <div className="text-center mt-12">
-          <Button asChild>
-            <Link href="/community">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Comment or Case Note
-            </Link>
-          </Button>
-        </div>
       </div>
     </section>
   );
