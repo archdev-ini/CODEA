@@ -81,84 +81,80 @@ export default function AddJurisdictionForm() {
   }
 
   return (
-    <section className="py-20 md:py-28 bg-background">
-      <div className="container mx-auto px-4">
-        <Card className="max-w-xl mx-auto">
-          <CardHeader>
-            <CardTitle>Add New Jurisdiction</CardTitle>
-            <CardDescription>
-              Add a new country, state, or region to the database.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Jurisdiction Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Nigeria" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+    <Card className="max-w-xl mx-auto">
+      <CardHeader>
+        <CardTitle>Add New Jurisdiction</CardTitle>
+        <CardDescription>
+          Add a new country, state, or region to the database.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Jurisdiction Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Nigeria" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <FormField
-                  control={form.control}
-                  name="level"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Level</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a level" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Object.values(jurisdictionSchema.shape.level.options).map((level) => (
-                              <SelectItem key={level} value={level}>
-                                {level}
-                              </SelectItem>
-                            )
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <FormField
+              control={form.control}
+              name="level"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Level</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(jurisdictionSchema.shape.level.options).map((level) => (
+                          <SelectItem key={level} value={level}>
+                            {level}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Adding...
-                    </>
-                  ) : (
-                    'Add Jurisdiction'
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </div>
-    </section>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                'Add Jurisdiction'
+              )}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
