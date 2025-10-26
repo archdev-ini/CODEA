@@ -1,7 +1,7 @@
 'use server';
 
-import { collection, addDoc, Firestore } from 'firebase/firestore';
-import { getSdks } from '@/firebase'; // Assuming getSdks is exported and gives firestore instance
+import { collection, addDoc } from 'firebase/firestore';
+import { initializeFirebase, addDocumentNonBlocking } from '@/firebase';
 
 type Jurisdiction = {
   name: string;
@@ -10,12 +10,11 @@ type Jurisdiction = {
 
 export async function addJurisdiction(jurisdiction: Jurisdiction) {
   try {
-    const { firestore } = getSdks();
-    if (!firestore) {
-      throw new Error('Firestore is not initialized.');
-    }
+    // Initialize Firebase on the server-side to get the firestore instance
+    const { firestore } = initializeFirebase();
     
-    await addDoc(collection(firestore, 'jurisdictions'), {
+    // Use the non-blocking helper to add the document
+    addDocumentNonBlocking(collection(firestore, 'jurisdictions'), {
       name: jurisdiction.name,
       level: jurisdiction.level,
     });
