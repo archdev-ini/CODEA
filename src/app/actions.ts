@@ -85,3 +85,48 @@ export async function askCodeQuestion(
     };
   }
 }
+
+
+const contributionSchema = z.object({
+  country: z.string().min(1, 'Country is required'),
+  section: z.string().min(1, 'Section is required'),
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  description: z.string().min(10, 'Description must be at least 10 characters'),
+  references: z.string().optional(),
+  tags: z.string().optional(),
+  contributorName: z.string().optional(),
+  contributorEmail: z.union([z.string().email(), z.literal('')]).optional(),
+});
+
+
+type ContributionResponse = {
+  success: boolean;
+  error?: string;
+};
+
+export async function submitContribution(
+  values: z.infer<typeof contributionSchema>
+): Promise<ContributionResponse> {
+  const validatedFields = contributionSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    console.error('Validation failed:', validatedFields.error.flatten());
+    return {
+      success: false,
+      error: 'Invalid input. Please check the form and try again.',
+    };
+  }
+
+  try {
+    // TODO: In the future, this will save the contribution to Firestore
+    // For now, we just log it to the console.
+    console.log('New contribution received:', validatedFields.data);
+    return { success: true };
+  } catch (e) {
+    console.error('Failed to submit contribution:', e);
+    return {
+      success: false,
+      error: 'An unexpected error occurred. Please try again later.',
+    };
+  }
+}

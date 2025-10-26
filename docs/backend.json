@@ -1,62 +1,36 @@
 {
   "entities": {
-    "Country": {
-      "title": "Country",
+    "Jurisdiction": {
+      "title": "Jurisdiction",
+      "description": "Represents a geographical or political entity with its own set of building codes (e.g., Country, State, City).",
       "type": "object",
-      "description": "Represents a country with its code regulations.",
       "properties": {
-        "label": {
-          "type": "string",
-          "description": "The display name of the country."
-        },
-        "value": {
-          "type": "string",
-          "description": "The unique identifier for the country (e.g., 'nigeria')."
-        }
+        "name": { "type": "string", "description": "Official name of the jurisdiction (e.g., 'Nigeria', 'Lagos State')." },
+        "level": { "type": "string", "enum": ["CONTINENTAL", "REGIONAL", "NATIONAL", "STATE_PROVINCIAL", "CITY_MUNICIPAL", "INDIGENOUS"], "description": "The hierarchical level of the jurisdiction." },
+        "parent": { "type": "string", "description": "Reference to the parent jurisdiction's ID, if any." }
       },
-      "required": ["label", "value"]
-    },
-    "CodeSection": {
-      "title": "Code Section",
-      "type": "object",
-      "description": "A section or chapter within a country's building code.",
-      "properties": {
-        "title": {
-          "type": "string",
-          "description": "The title of the code section."
-        },
-        "summary": {
-          "type": "string",
-          "description": "A brief summary of the section's content."
-        }
-      },
-      "required": ["title", "summary"]
+      "required": ["name", "level"]
     },
     "CodeArticle": {
       "title": "Code Article",
       "type": "object",
-      "description": "A specific article or clause within a code section.",
+      "description": "A specific article, clause, or regulation within a building code.",
       "properties": {
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "requirements": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "references": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "keywords": {
-          "type": "array",
-          "items": { "type": "string" }
-        }
+        "codeId": { "type": "string", "description": "Unique identifier (e.g., CDA-BC-NG-LAG-2025)." },
+        "jurisdictionId": { "type": "string", "description": "ID of the governing jurisdiction." },
+        "codeName": { "type": "string", "description": "Official name of the code document." },
+        "issuingBody": { "type": "string", "description": "Ministry or agency responsible." },
+        "version": { "type": "string", "description": "Year of adoption or revision." },
+        "status": { "type": "string", "enum": ["ACTIVE", "DRAFT", "OUTDATED"], "description": "Current status of the code." },
+        "coverage": { "type": "array", "items": { "type": "string" }, "description": "Areas covered (e.g., Structural, Fire, Accessibility)." },
+        "language": { "type": "string", "default": "English" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "requirements": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string", "description": "URL or document reference." },
+        "keywords": { "type": "array", "items": { "type": "string" } }
       },
-      "required": ["title", "description"]
+      "required": ["codeId", "jurisdictionId", "codeName", "title", "description"]
     }
   },
   "auth": {
@@ -66,17 +40,13 @@
     ]
   },
   "firestore": {
-    "/countries/{countryId}": {
-      "schema": { "$ref": "#/entities/Country" },
-      "description": "Collection of countries."
+    "/jurisdictions/{jurisdictionId}": {
+      "schema": { "$ref": "#/entities/Jurisdiction" },
+      "description": "Collection of all jurisdictions at various levels."
     },
-    "/countries/{countryId}/sections/{sectionId}": {
-      "schema": { "$ref": "#/entities/CodeSection" },
-      "description": "Collection of code sections for a specific country."
-    },
-    "/countries/{countryId}/sections/{sectionId}/articles/{articleId}": {
+    "/articles/{articleId}": {
       "schema": { "$ref": "#/entities/CodeArticle" },
-      "description": "Collection of code articles for a specific section."
+      "description": "Master collection of all code articles, linked to jurisdictions."
     }
   }
 }
