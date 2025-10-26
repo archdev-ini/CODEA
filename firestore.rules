@@ -1,0 +1,31 @@
+/**
+ * @file Firestore Security Rules for the CODEA library.
+ * @core_philosophy This ruleset provides public read access to architectural precedents,
+ *  allowing anyone to retrieve and list them. Write access is completely disabled,
+ *  ensuring data integrity and preventing unauthorized modifications.
+ * @data_structure The database consists of a single top-level collection, `/precedents/{precedentId}`,
+ *  which stores data about architectural precedents.
+ * @key_security_decisions Public read access is granted to the `precedents` collection to enable
+ *  unrestricted access to architectural precedent data. All write operations are explicitly
+ *  denied, preventing any modifications to the data. This is suitable since there is no user specific data or roles.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Grants public read access to architectural precedents and denies all write operations.
+     * @path /precedents/{precedentId}
+     * @allow (get, list) Anyone can read architectural precedent data.
+     * @deny (create, update, delete) No one can create, update, or delete architectural precedent data.
+     * @principle Provides public read access and restricts all write access to architectural precedent data.
+     */
+    match /precedents/{precedentId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}
