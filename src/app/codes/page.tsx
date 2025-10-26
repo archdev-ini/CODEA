@@ -11,6 +11,8 @@ import { askCodeQuestion } from '@/app/actions';
 import { Loader2 } from 'lucide-react';
 import { availableCountries, type Country } from '@/lib/countries';
 import CountryIndex from '@/components/sections/codes/country-index';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 // Kept for type reference, but AI is disabled.
 type AnswerCodeQuestionOutput = {
@@ -27,14 +29,24 @@ export default function CodesPage() {
   const [error, setError] = useState<string | null>(null);
   const [countries, setCountries] = useState<Country[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>('');
+  
+  const firestore = useFirestore();
+  const countriesQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'countries');
+  }, [firestore]);
+
+  const { data: countriesData, isLoading: countriesLoading } = useCollection<{label: string, value: string}>(countriesQuery);
 
   useEffect(() => {
-    const countries = availableCountries();
-    setCountries(countries);
-    if (countries.length > 0) {
-      setSelectedCountry(countries[0].value);
+    if (countriesData) {
+      const countryList = countriesData.map(c => ({label: c.label, value: c.value}));
+      setCountries(countryList);
+      if (countryList.length > 0 && !selectedCountry) {
+        setSelectedCountry(countryList[0].value);
+      }
     }
-  }, []);
+  }, [countriesData, selectedCountry]);
 
   const handleSearch = async (question: string) => {
     if (!question || !selectedCountry) return;

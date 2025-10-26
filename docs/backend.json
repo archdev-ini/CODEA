@@ -1,58 +1,62 @@
 {
   "entities": {
-    "Precedent": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Precedent",
+    "Country": {
+      "title": "Country",
       "type": "object",
-      "description": "Represents an architectural precedent stored in the CODEA library.",
+      "description": "Represents a country with its code regulations.",
       "properties": {
-        "id": {
+        "label": {
           "type": "string",
-          "description": "Unique identifier for the Precedent entity."
+          "description": "The display name of the country."
         },
-        "title": {
+        "value": {
           "type": "string",
-          "description": "Title of the architectural precedent."
-        },
-        "architect": {
-          "type": "string",
-          "description": "Name of the architect or firm responsible for the precedent."
-        },
-        "location": {
-          "type": "string",
-          "description": "Geographic location of the architectural precedent."
-        },
-        "year": {
-          "type": "number",
-          "description": "Year the architectural precedent was completed."
-        },
-        "description": {
-          "type": "string",
-          "description": "Detailed description of the architectural precedent."
-        },
-        "tags": {
-          "type": "array",
-          "description": "Tags associated with the architectural precedent.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL of an image representing the architectural precedent.",
-          "format": "uri"
+          "description": "The unique identifier for the country (e.g., 'nigeria')."
         }
       },
-      "required": [
-        "id",
-        "title",
-        "architect",
-        "location",
-        "year",
-        "description",
-        "tags",
-        "imageUrl"
-      ]
+      "required": ["label", "value"]
+    },
+    "CodeSection": {
+      "title": "Code Section",
+      "type": "object",
+      "description": "A section or chapter within a country's building code.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the code section."
+        },
+        "summary": {
+          "type": "string",
+          "description": "A brief summary of the section's content."
+        }
+      },
+      "required": ["title", "summary"]
+    },
+    "CodeArticle": {
+      "title": "Code Article",
+      "type": "object",
+      "description": "A specific article or clause within a code section.",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "requirements": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "references": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["title", "description"]
     }
   },
   "auth": {
@@ -62,24 +66,17 @@
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/precedents/{precedentId}",
-        "definition": {
-          "entityName": "Precedent",
-          "schema": {
-            "$ref": "#/backend/entities/Precedent"
-          },
-          "description": "Collection of architectural precedents.  Each document represents a single architectural precedent.",
-          "params": [
-            {
-              "name": "precedentId",
-              "description": "The unique identifier for the precedent."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "The data structure prioritizes ease of querying and security. The `precedents` collection stores architectural precedent data. This flattens the structure to enable simple queries and avoid complex security rules based on hierarchy.  This structure supports the QAP by enabling straightforward listing of precedents based on different criteria without requiring filtering in the rules. Since there are no user specific data or roles, this structure assumes open access to the data."
+    "/countries/{countryId}": {
+      "schema": { "$ref": "#/entities/Country" },
+      "description": "Collection of countries."
+    },
+    "/countries/{countryId}/sections/{sectionId}": {
+      "schema": { "$ref": "#/entities/CodeSection" },
+      "description": "Collection of code sections for a specific country."
+    },
+    "/countries/{countryId}/sections/{sectionId}/articles/{articleId}": {
+      "schema": { "$ref": "#/entities/CodeArticle" },
+      "description": "Collection of code articles for a specific section."
+    }
   }
 }
