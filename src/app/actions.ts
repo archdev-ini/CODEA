@@ -1,7 +1,6 @@
 'use server';
 
-import { collection, addDoc } from 'firebase/firestore';
-import { initializeFirebase, addDocumentNonBlocking } from '@/firebase';
+import { adminDb } from '@/firebase/server';
 
 type Jurisdiction = {
   name: string;
@@ -10,11 +9,7 @@ type Jurisdiction = {
 
 export async function addJurisdiction(jurisdiction: Jurisdiction) {
   try {
-    // Initialize Firebase on the server-side to get the firestore instance
-    const { firestore } = initializeFirebase();
-    
-    // Use the non-blocking helper to add the document
-    addDocumentNonBlocking(collection(firestore, 'jurisdictions'), {
+    await adminDb.collection('jurisdictions').add({
       name: jurisdiction.name,
       level: jurisdiction.level,
     });

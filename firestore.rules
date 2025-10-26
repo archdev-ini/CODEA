@@ -1,80 +1,22 @@
-/**
- * @fileOverview Firestore Security Rules for the Building Code Management App.
- *
- * Core Philosophy:
- * This ruleset prioritizes data security by implementing a public read, owner-only write access control pattern for code articles.
- * Jurisdictions are publicly readable, with no write access granted through these rules (likely managed via a separate admin interface).
- *
- * Data Structure:
- * - /jurisdictions/{jurisdictionId}: Stores information about geographical and political jurisdictions.
- * - /articles/{articleId}: Stores code articles, each linked to a specific jurisdiction.
- *
- * Key Security Decisions:
- * - Jurisdictions are publicly readable to allow easy access to jurisdictional data for all users.
- * - Code articles follow a public read, owner-only write pattern, meaning any user can read the articles, but only the article's creator can modify or delete it. This is facilitated by enforcing the existence of an `authorId` field on each article and validating its value on write operations.
- * - Listing of code articles is public to promote discoverability and accessibility.
- * - No user listing is allowed to protect user privacy.
- *
- * Denormalization for Authorization:
- * - Code articles must contain an `authorId` field to enable owner-only write access. This avoids costly and complex `get()` operations to determine ownership.
- */
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+    // By default, deny all reads and writes.
+    match /{document=**} {
+      allow read, write: if false;
+    }
 
-    /**
-     * @description Grants public read access to jurisdictions. No write access is granted through these rules.
-     * @path /jurisdictions/{jurisdictionId}
-     * @allow (get, list): Any user can read jurisdiction data.
-     * @deny (create, update, delete): No user can create, update, or delete jurisdictions via the client app.
-     * @principle Allows public read access to jurisdictions. Write operations are not permitted.
-     */
+    // Allow public read access to jurisdictions, but restrict writes.
     match /jurisdictions/{jurisdictionId} {
-      allow get, list: if true;
-      allow create, update, delete: if false;
+      allow read: if true;
+      allow write: if request.auth != null; // Only authenticated users can write
     }
 
-    /**
-     * @description Implements a public read, owner-only write access control for code articles.
-     * @path /articles/{articleId}
-     * @allow (get, list): Any user can read or list code articles.
-     * @allow (create): Only the authenticated user whose ID matches the 'authorId' in the request can create a code article.
-     * @allow (update, delete): Only the authenticated user who is the existing owner ('authorId' field) of the code article can update or delete it, and the resource must exist.
-     * @deny (create): An unauthenticated user cannot create a code article.
-     * @deny (update, delete): A user who is not the owner of the code article cannot update or delete it.
-     * @principle Enforces document ownership for writes based on the 'authorId' field.
-     */
+    // Allow public read access to articles, but restrict writes.
     match /articles/{articleId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
-      allow update: if isSignedIn() && isExistingOwner(resource.data.authorId);
-      allow delete: if isSignedIn() && isExistingOwner(resource.data.authorId);
-    }
-
-    /**
-     * @description Checks if the user is signed in.
-     * @returns {boolean} True if the user is signed in, false otherwise.
-     */
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    /**
-     * @description Checks if the user is the owner of the document, and the document exists.
-     * @param {string} userId - The user ID to check against.
-     * @returns {boolean} True if the user is the owner and the resource exists, false otherwise.
-     */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
-    }
-
-    /**
-     * @description Checks if the authenticated user's UID matches the provided user ID.
-     * @param {string} userId - The user ID to check against.
-     * @returns {boolean} True if the user ID matches the authenticated user's UID, false otherwise.
-     */
-    function isOwner(userId) {
-      return request.auth.uid == userId;
+      allow read: if true;
+      allow write: if request.auth != null; // Only authenticated users can write
     }
   }
 }
