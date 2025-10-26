@@ -51,6 +51,11 @@ export default function Header() {
                     Codes
                   </Link>
                 </SheetClose>
+                 <SheetClose asChild>
+                  <Link href="/admin" className="text-lg">
+                    Admin
+                  </Link>
+                </SheetClose>
               </div>
             </SheetContent>
           </Sheet>
@@ -61,6 +66,9 @@ export default function Header() {
             </Button>
             <Button variant="link" asChild>
               <Link href="/codes">Codes</Link>
+            </Button>
+            <Button variant="link" asChild>
+              <Link href="/admin">Admin</Link>
             </Button>
           </nav>
         )}
