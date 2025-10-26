@@ -1,31 +1,50 @@
 /**
- * @file Firestore Security Rules for the CODEA library.
- * @core_philosophy This ruleset provides public read access to architectural precedents,
- *  allowing anyone to retrieve and list them. Write access is completely disabled,
- *  ensuring data integrity and preventing unauthorized modifications.
- * @data_structure The database consists of a single top-level collection, `/precedents/{precedentId}`,
- *  which stores data about architectural precedents.
- * @key_security_decisions Public read access is granted to the `precedents` collection to enable
- *  unrestricted access to architectural precedent data. All write operations are explicitly
- *  denied, preventing any modifications to the data. This is suitable since there is no user specific data or roles.
+ * @file Firestore Security Rules
+ * @description This ruleset is in Prototyping Mode. It prioritizes security by strictly controlling write access based on ownership and roles, while relaxing data validation to accelerate development.
+ *
+ * Core Philosophy:
+ *  - All write operations are protected by authentication checks and, where applicable, ownership validation.
+ *  - Read operations on the 'jurisdictions' collection are publicly accessible, enabling anonymous browsing of jurisdictional data.
+ *  - The 'articles' collection is also publicly readable.
+ *  - Data validation is minimized to allow for flexible data shapes during prototyping. Only essential fields (e.g., ownership IDs) are validated for consistency.
+ *
+ * Data Structure:
+ *  - /jurisdictions/{jurisdictionId}: Stores jurisdiction data.
+ *  - /articles/{articleId}: Stores code article data.
+ *
+ * Key Security Decisions:
+ *  - Public Read Access: The 'jurisdictions' collection is readable by anyone, including unauthenticated users. This is suitable for data intended to be publicly accessible.
+ *  - No User Listing: Listing all users is not permitted to prevent information leakage.
+ *
+ * Denormalization for Authorization: N/A (Currently no denormalization is needed, but the comments should be updated as the rules evolve).
+ * Structural Segregation: N/A (Currently no structural segregation is needed, but the comments should be updated as the rules evolve).
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to architectural precedents and denies all write operations.
-     * @path /precedents/{precedentId}
-     * @allow (get, list) Anyone can read architectural precedent data.
-     * @deny (create, update, delete) No one can create, update, or delete architectural precedent data.
-     * @principle Provides public read access and restricts all write access to architectural precedent data.
+     * @description Allows public read access to the 'jurisdictions' collection, while restricting writes.
+     * @path /databases/{database}/documents/jurisdictions/{jurisdictionId}
+     * @allow (get, list): Any user, including unauthenticated users, can read jurisdiction data.
+     * @deny (create, update, delete): No one can create, update, or delete jurisdiction documents.
+     * @principle Allows public reads; prohibits unauthorized data modification.
      */
-    match /precedents/{precedentId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /jurisdictions/{jurisdictionId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows public read access to the 'articles' collection, while restricting writes.
+     * @path /databases/{database}/documents/articles/{articleId}
+     * @allow (get, list): Any user, including unauthenticated users, can read code articles.
+     * @deny (create, update, delete): No one can create, update, or delete code articles.
+     * @principle Allows public reads; prohibits unauthorized data modification.
+     */
+    match /articles/{articleId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
   }
 }
