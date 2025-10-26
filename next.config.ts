@@ -31,13 +31,7 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return [
-      {
-        source: '/codes',
-        destination: '/',
-        permanent: false,
-      },
-    ]
+    return []
   },
 };
 

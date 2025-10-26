@@ -1,3 +1,4 @@
+
 {
   "meta": {
     "country": "Nigeria",
@@ -8,5 +9,42 @@
     "language": "English",
     "tags": ["building", "zoning", "safety"]
   },
-  "sections": []
+  "sections": [
+    {
+      "id": "general-requirements",
+      "title": "General Requirements",
+      "summary": "This section covers general provisions, definitions, and administrative requirements applicable to all building projects.",
+      "articles": [
+        {
+          "code_id": "NBC-GEN-1.1",
+          "title": "Application of Code",
+          "description": "This code shall apply to the design, construction, alteration, and demolition of all buildings and structures within the Federal Republic of Nigeria.",
+          "requirements": [
+            "All new construction must obtain a permit before commencement.",
+            "Alterations affecting structural stability require professional certification."
+          ],
+          "references": ["NBC 2006, Part 1, Section 1.1"],
+          "keywords": ["applicability", "scope", "permit"],
+          "notes": "Exemptions may apply for minor repairs and temporary structures as defined by local authorities."
+        },
+        {
+          "code_id": "NBC-GEN-1.2",
+          "title": "Habitable Room Minimum Height",
+          "description": "Specifies the minimum ceiling height for rooms intended for human habitation to ensure comfort and adequate air circulation.",
+          "requirements": [
+            "A minimum ceiling height of 2.7 meters is required for all habitable rooms.",
+            "For rooms with sloped ceilings, the average height must be at least 2.7 meters, with no portion less than 2.1 meters."
+          ],
+          "references": ["NBC 2006, Part 3, Section 5.2.1"],
+          "keywords": ["ceiling height", "habitable room", "headroom"],
+          "examples": [
+            {
+              "context": "Residential bedroom",
+              "application": "The floor-to-ceiling measurement must be no less than 2.7m."
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
