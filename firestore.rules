@@ -1,103 +1,88 @@
 /**
  * @file Firestore Security Rules for CODEA Landing Application
  *
- * @core_philosophy This ruleset implements a hybrid security model:
- *   - Public data (precedents, vision insights) is readable by all users.
- *   - User-specific data (interactions) is strictly controlled, allowing only the owning user to access it.
+ * @core_philosophy This ruleset implements a hybrid security model: public read access for precedents and vision insights,
+ *                  and strict user-ownership for user interaction data.
  *
  * @data_structure
- *   - /precedents/{precedentId}: Stores publicly accessible architectural precedents.
- *   - /vision_insights/{visionInsightId}: Stores publicly accessible vision insights.
- *   - /users/{userId}/interactions/{interactionId}: Stores user-specific interaction data.  Only the user can access their own interactions.
+ *   - /precedents/{precedentId}: Publicly accessible architectural precedents.
+ *   - /vision_insights/{visionInsightId}: Publicly accessible vision insights.
+ *   - /users/{userId}/interactions/{interactionId}: User-specific interaction data.
  *
  * @key_security_decisions
- *   - Public read access is granted to the 'precedents' and 'vision_insights' collections.
- *   - Listing of precedents and vision insights is allowed for all users.
- *   - User listing is disallowed for privacy.
- *   - The rules enforce strict ownership for user interactions, ensuring that only the owning user can create, read, update, or delete their own interaction data.
+ *   - Public read access is granted to the /precedents and /vision_insights collections.
+ *   - User interaction data is strictly controlled by path-based ownership; users can only access their own data.
+ *   - The rules explicitly deny any unauthorized access, ensuring data privacy and integrity.
+ *   - Listing of user interactions is only allowed for the owning user.
+ *
+ * @denormalization_for_authorization
+ *   - Path-based ownership in /users/{userId}/interactions/{interactionId} eliminates the need for `get()` calls to determine ownership. The `userId` path segment directly implies ownership.
+ *
+ * @structural_segregation
+ *   - Public data (precedents, vision insights) is stored in top-level collections, while private, user-specific data (user interactions) is stored under the /users/{userId} path, providing a clear separation of concerns.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Checks if the request is made by the owner of the document.
-     * @param {string} userId - The user ID to compare against the request's authentication UID.
-     * @return {bool} True if the user ID matches the request's authentication UID, false otherwise.
+     * @description Allows public read access to precedents, with no write access.
+     * @path /precedents/{precedentId}
+     * @allow get, list: Anyone can read precedents.
+     * @deny create, update, delete: No one can modify or delete precedents.
+     * @principle Allows public access for read-only content
      */
-    function isOwner(userId) {
-      return request.auth.uid == userId;
+    match /precedents/{precedentId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Checks if the user is signed in.
-     * @return {bool} True if the user is signed in, false otherwise.
+     * @description Allows public read access to vision insights, with no write access.
+     * @path /vision_insights/{visionInsightId}
+     * @allow get, list: Anyone can read vision insights.
+     * @deny create, update, delete: No one can modify or delete vision insights.
+     * @principle Allows public access for read-only content.
+     */
+    match /vision_insights/{visionInsightId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Enforces user-ownership for interaction data.
+     * @path /users/{userId}/interactions/{interactionId}
+     * @allow get, list: Only the owner (matching userId) can read their interactions.
+     * @allow create: Only the owner can create new interaction documents with a matching user ID.
+     * @allow update, delete: Only the owner can modify or delete their existing interactions.
+     * @deny get, list: if userId != request.auth.uid;
+     * @principle Enforces document ownership for reads and writes.
+     */
+    match /users/{userId}/interactions/{interactionId} {
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if isSignedIn() && isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId);
+      allow update: if isSignedIn() && isOwner(userId) && resource != null;
+      allow delete: if isSignedIn() && isOwner(userId) && resource != null;
+    }
+
+    // --- Helper Functions ---
+
+    /**
+     * @description Checks if the request is authenticated.
+     * @return {bool} True if the request is authenticated, false otherwise.
      */
     function isSignedIn() {
       return request.auth != null;
     }
 
     /**
-     * @description Checks if the user is the owner of an existing document.
-     * @param {string} userId - The user ID to compare against the document's owner ID.
-     * @return {bool} True if the user ID matches the document's owner ID and the document exists.
+     * @description Checks if the requesting user is the owner of the resource, based on the provided user ID.
+     * @param {string} userId The user ID to compare against the request's authentication UID.
+     * @return {bool} True if the user is the owner, false otherwise.
      */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource.data != null;
-    }
-
-    /**
-     * @description Rules for the 'precedents' collection.
-     * @path /precedents/{precedentId}
-     * @allow (get, list) Any user can read precedents.
-     * @allow (create) No one can create precedents (only accessible via the console or server-side logic).
-     * @allow (update, delete) No one can update or delete precedents (only accessible via the console or server-side logic).
-     * @deny (create, update, delete) Prevents unauthorized modification of precedents.
-     * @principle Allows public read access to precedents while restricting write access.
-     */
-    match /precedents/{precedentId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
-    }
-
-    /**
-     * @description Rules for the 'vision_insights' collection.
-     * @path /vision_insights/{visionInsightId}
-     * @allow (get, list) Any user can read vision insights.
-     * @allow (create) No one can create vision insights (only accessible via the console or server-side logic).
-     * @allow (update, delete) No one can update or delete vision insights (only accessible via the console or server-side logic).
-     * @deny (create, update, delete) Prevents unauthorized modification of vision insights.
-     * @principle Allows public read access to vision insights while restricting write access.
-     */
-    match /vision_insights/{visionInsightId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
-    }
-
-    /**
-     * @description Rules for the 'interactions' subcollection under each user.
-     * @path /users/{userId}/interactions/{interactionId}
-     * @allow (get, list) User can read their own interactions.
-     * @allow (create) User can create interactions under their own user ID.
-     * @allow (update, delete) User can update/delete their own interactions.
-     * @deny (get, list) A user cannot read another user's interactions.
-     * @deny (create, update, delete) A user cannot create, update, or delete interactions under another user's ID.
-     * @principle Enforces path-based ownership: only the user with the matching userId can access their interaction data.
-     */
-    match /users/{userId}/interactions/{interactionId} {
-      allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-      allow create: if isOwner(userId) && isSignedIn();
-      allow update: if isExistingOwner(userId);
-      allow delete: if isExistingOwner(userId);
-    }
-
-     match /users/{userId} {
-      allow read, write: if false;
+    function isOwner(userId) {
+      return request.auth.uid == userId;
     }
   }
 }
