@@ -1,74 +1,106 @@
 /**
  * @file Firestore Security Rules for CODEA Landing Application
  *
- * @core_philosophy This ruleset enforces a combination of public read access for globally available data (precedents, vision insights) and strict user-ownership for private data (user interactions).
+ * @core_philosophy This ruleset implements a hybrid security model:
+ *   - Public data (precedents, vision insights) is readable by all users.
+ *   - User-specific data (interactions) is strictly controlled, allowing only the owning user to access it.
  *
  * @data_structure
- *   - /precedents/{precedentId}: Publicly accessible architectural precedents.
- *   - /vision_insights/{visionInsightId}: Publicly accessible vision insights.
- *   - /users/{userId}/interactions/{interactionId}: User-specific interaction data, accessible only to the owning user.
+ *   - /precedents/{precedentId}: Stores publicly accessible architectural precedents.
+ *   - /vision_insights/{visionInsightId}: Stores publicly accessible vision insights.
+ *   - /users/{userId}/interactions/{interactionId}: Stores user-specific interaction data.  Only the user can access their own interactions.
  *
  * @key_security_decisions
- *   - Public Read Access: The precedents and vision_insights collections are readable by all users (including unauthenticated users).
- *   - User Interaction Ownership: User interactions are strictly owned by the user whose ID is in the path.
- *   - No User Listing: Listing of all users is disallowed.
- *
- * @denormalization_for_authorization N/A - Authorization decisions are based directly on `request.auth.uid` and the document paths.
- * @structural_segregation Public data (precedents, vision insights) is stored in top-level collections, while private user data (user interactions) is stored in user-specific subcollections. This simplifies access control and improves query performance.
+ *   - Public read access is granted to the 'precedents' and 'vision_insights' collections.
+ *   - Listing of precedents and vision insights is allowed for all users.
+ *   - User listing is disallowed for privacy.
+ *   - The rules enforce strict ownership for user interactions, ensuring that only the owning user can create, read, update, or delete their own interaction data.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to precedents and owner-only write access.
+     * @description Checks if the request is made by the owner of the document.
+     * @param {string} userId - The user ID to compare against the request's authentication UID.
+     * @return {bool} True if the user ID matches the request's authentication UID, false otherwise.
+     */
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {bool} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the user is the owner of an existing document.
+     * @param {string} userId - The user ID to compare against the document's owner ID.
+     * @return {bool} True if the user ID matches the document's owner ID and the document exists.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && exists(resource.data);
+    }
+
+    /**
+     * @description Rules for the 'precedents' collection.
      * @path /precedents/{precedentId}
-     * @allow (get, list): Any user can read precedents.
-     * @allow (create): Any authenticated user can create a precedent. The 'id' field must be equal to `precedentId`.
-     * @allow (update, delete): Only the user who created the precedent can modify or delete it.
-     * @deny (create): An unauthenticated user cannot create a precedent.
-     * @deny (update, delete): A user cannot modify or delete a precedent they don't own.
-     * @principle Public read, owner-only write access control.
+     * @allow (get, list) Any user can read precedents.
+     * @allow (create) No one can create precedents (only accessible via the console or server-side logic).
+     * @allow (update, delete) No one can update or delete precedents (only accessible via the console or server-side logic).
+     * @deny (create, update, delete) Prevents unauthorized modification of precedents.
+     * @principle Allows public read access to precedents while restricting write access.
      */
     match /precedents/{precedentId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update, delete: if false; // TODO: Need to implement create() rule before update() and delete() can be allowed.
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Allows public read access to vision insights.
+     * @description Rules for the 'vision_insights' collection.
      * @path /vision_insights/{visionInsightId}
-     * @allow (get, list): Any user can read vision insights.
-     * @deny (create, update, delete): No one can create, update, or delete vision insights through the client.
-     * @principle Public read access control.
+     * @allow (get, list) Any user can read vision insights.
+     * @allow (create) No one can create vision insights (only accessible via the console or server-side logic).
+     * @allow (update, delete) No one can update or delete vision insights (only accessible via the console or server-side logic).
+     * @deny (create, update, delete) Prevents unauthorized modification of vision insights.
+     * @principle Allows public read access to vision insights while restricting write access.
      */
     match /vision_insights/{visionInsightId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Enforces strict user-ownership for user interaction data.
+     * @description Rules for the 'interactions' subcollection under each user.
      * @path /users/{userId}/interactions/{interactionId}
-     * @allow (create): Only the user with the matching userId can create interaction data under their path. The 'userId' field in the document must match the userId in the path.
-     * @allow (get, list, update, delete): Only the user with the matching userId can access their interaction data.
-     * @deny (create): A user cannot create interaction data under another user's path. The 'userId' field in the document must match the userId in the path.
-     * @deny (get, list, update, delete): A user cannot access another user's interaction data.
-     * @principle Enforces document ownership for all operations.
+     * @allow (get, list) User can read their own interactions.
+     * @allow (create) User can create interactions under their own user ID.
+     * @allow (update, delete) User can update/delete their own interactions.
+     * @deny (get, list) A user cannot read another user's interactions.
+     * @deny (create, update, delete) A user cannot create, update, or delete interactions under another user's ID.
+     * @principle Enforces path-based ownership: only the user with the matching userId can access their interaction data.
      */
     match /users/{userId}/interactions/{interactionId} {
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if isSignedIn() && isOwner(userId);
       allow create: if isSignedIn() && isOwner(userId);
-      allow get, list, update, delete: if isSignedIn() && isOwner(userId);
+      allow update: if isSignedIn() && isOwner(userId);
+      allow delete: if isSignedIn() && isOwner(userId);
     }
-  }
 
-  // Helper Functions
-  function isSignedIn() {
-    return request.auth != null;
-  }
-
-  function isOwner(userId) {
-    return request.auth.uid == userId;
+     match /users/{userId} {
+      allow get: if request.auth.uid == userId && isSignedIn();
+      allow update: if request.auth.uid == userId && isSignedIn();
+      allow create: if request.auth.uid == userId && isSignedIn();
+      allow delete: if false;
+    }
   }
 }
