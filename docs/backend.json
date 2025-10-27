@@ -66,6 +66,18 @@
         "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the document was uploaded." }
       },
       "required": ["title", "sourceFile", "content", "uploadedBy", "createdAt"]
+    },
+    "JurisdictionRequest": {
+      "title": "Jurisdiction Request",
+      "description": "A user's request to add a new jurisdiction to the platform.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the requested jurisdiction." },
+        "requestedBy": { "type": "string", "description": "Identifier of the user who made the request (optional)." },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"], "default": "PENDING" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "createdAt"]
     }
   },
   "auth": {
@@ -90,6 +102,10 @@
     "/documents/{documentId}": {
       "schema": { "$ref": "#/entities/CodeDocument" },
       "description": "Collection of uploaded documents with their AI-extracted text content."
+    },
+    "/requests/{requestId}": {
+      "schema": { "$ref": "#/entities/JurisdictionRequest" },
+      "description": "Collection of user-submitted requests for new jurisdictions."
     }
   }
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -29,12 +30,22 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import SpotlightCard from '@/components/ui/SpotlightCard';
 import { collection, query } from 'firebase/firestore';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { submitContribution } from '@/app/actions';
+import { submitContribution, requestJurisdiction } from '@/app/actions';
 
 const contributionSchema = z.object({
   country: z.string().min(1, 'Country is required'),
@@ -49,12 +60,102 @@ const contributionSchema = z.object({
   contributorEmail: z.union([z.string().email(), z.literal('')]).optional(),
 });
 
+const requestSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+});
+
 type ContributionFormValues = z.infer<typeof contributionSchema>;
+type RequestFormValues = z.infer<typeof requestSchema>;
 
 type Jurisdiction = {
   id: string;
   name: string;
 };
+
+function RequestJurisdictionDialog() {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const requestForm = useForm<RequestFormValues>({
+    resolver: zodResolver(requestSchema),
+    defaultValues: { name: '' },
+  });
+
+  async function handleRequestSubmit(data: RequestFormValues) {
+    setIsLoading(true);
+    const result = await requestJurisdiction(data);
+    setIsLoading(false);
+
+    if (result.success) {
+      toast({
+        title: 'Request Submitted',
+        description: `Thank you for requesting "${data.name}". It will be reviewed shortly.`,
+      });
+      requestForm.reset();
+      setIsOpen(false);
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Request Failed',
+        description: result.error || 'An unexpected error occurred.',
+      });
+    }
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="link" className="text-sm h-auto p-0">
+          Don't see your region? Request it.
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Request a New Jurisdiction</DialogTitle>
+          <DialogDescription>
+            If a country or region is missing, please request it below. We'll
+            review and add it to the platform.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...requestForm}>
+          <form
+            id="request-jurisdiction-form"
+            onSubmit={requestForm.handleSubmit(handleRequestSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={requestForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Jurisdiction Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Ghana, Addis Ababa" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button
+            type="submit"
+            form="request-jurisdiction-form"
+            disabled={isLoading}
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Submit Request
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function ContributionForm() {
   const { toast } = useToast();
@@ -145,6 +246,9 @@ export default function ContributionForm() {
                             ))}
                           </SelectContent>
                         </Select>
+                        <FormDescription className="flex justify-end">
+                           <RequestJurisdictionDialog />
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -162,7 +266,7 @@ export default function ContributionForm() {
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select a section" />
-                            </SelectTrigger>
+                            </Trigger>
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="structural">

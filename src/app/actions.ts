@@ -118,3 +118,22 @@ export async function uploadDocument(payload: UploadDocumentPayload) {
     return { success: false, error: error.message };
   }
 }
+
+type JurisdictionRequest = {
+  name: string;
+};
+
+export async function requestJurisdiction(request: JurisdictionRequest) {
+  try {
+    await adminDb.collection('requests').add({
+      name: request.name,
+      status: 'PENDING',
+      createdAt: new Date().toISOString(),
+      // requestedBy: 'anonymous' // Placeholder for user management
+    });
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error submitting jurisdiction request:', error);
+    return { success: false, error: error.message };
+  }
+}
