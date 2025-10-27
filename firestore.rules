@@ -1,105 +1,82 @@
 /**
- * @fileoverview Firestore Security Rules for Prototyping.
+ * @file Firestore Security Rules for CODEA Landing Application
+ * @version Prototyping Mode - Authorization Focused
  *
- * Core Philosophy:
- * This ruleset prioritizes rapid prototyping by focusing on authorization and skipping data validation.
- * It assumes a public-read, owner-write model for most collections unless otherwise specified.
+ * @description This ruleset enforces a strict data access model based on
+ * path-based ownership and public read access where appropriate. Data validation
+ * is minimized to allow for rapid prototyping and schema iteration.
  *
- * Data Structure:
- * The Firestore database contains the following top-level collections:
- * - /jurisdictions/{jurisdictionId}:  Geographical and political jurisdictions.
- * - /articles/{articleId}: Building code articles linked to jurisdictions.
- * - /insights/{insightId}: Community-submitted insights.
- * - /documents/{documentId}: Uploaded code documents with extracted content.
+ * @dataStructure
+ * - `/precedents/{precedentId}`: Publicly accessible architectural precedents.
+ * - `/vision_insights/{visionInsightId}`: Publicly accessible vision insights.
+ * - `/users/{userId}/interactions/{interactionId}`: User-specific interaction data, accessible only to the owning user.
  *
- * Key Security Decisions:
- * - Public Read: `get` and `list` operations are generally allowed for all users. This may change if it's determined that private user data should be added to some collections.
- * - Owner-Only Writes: `create`, `update`, and `delete` operations are restricted to the document owner.
- * - No User Listing: Listing all users is not permitted.
+ * @keySecurityDecisions
+ * - Public read access for precedents and vision insights.
+ * - User-owned interactions with path-based ownership enforcement.
+ * - No user listing is allowed.
  *
- * Denormalization for Authorization:
- * The current data model does not include explicit ownership fields on the documents in `/articles`, `/insights`, and `/documents`.
- * To enable owner-only writes for these collections, we'll assume the existence of an `ownerId` field and enforce that the `ownerId` matches the authenticated user's UID for `create`, `update`, and `delete` operations.
- * If the `ownerId` field is not present in the schema, the rules will include a `TODO` comment, indicating that the schema needs to be updated.
+ * @denormalization None necessary for the current ruleset, as ownership is derived from document paths.
+ * @structuralSegregation User-specific data is stored under the `/users/{userId}` path, ensuring private access. Public data is stored in top-level collections.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read Jurisdictions, but restricts creation, updates, and deletion to authenticated owners.
-     * @path /databases/{database}/documents/jurisdictions/{jurisdictionId}
-     * @allow (get, list): Anyone can read Jurisdictions.
-     * @allow (create): An authenticated user can create a Jurisdiction if they are the owner. Example: auth.uid = "user123"
-     * @allow (update, delete): An authenticated user can update/delete a Jurisdiction if they are the owner and the document exists. Example: auth.uid = "user123"
-     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
-     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
-     * @principle Enforces document ownership for writes; allows public reads.
+     * @description Grants public read access to precedents and restricts write access.
+     * @path /precedents/{precedentId}
+     * @allow (get, list)
+     * @allow (create, update, delete) User must be authenticated.
+     * @deny (create, update, delete) if user is not authenticated.
+     * @principle Public read access with owner-only writes.
      */
-    match /jurisdictions/{jurisdictionId} {
+    match /precedents/{precedentId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if isExistingOwner(resource.data.ownerId);
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Allows anyone to read Code Articles, but restricts creation, updates, and deletion to authenticated owners.
-     * @path /databases/{database}/documents/articles/{articleId}
-     * @allow (get, list): Anyone can read Code Articles.
-     * @allow (create): An authenticated user can create a Code Article if they are the owner. Example: auth.uid = "user123"
-     * @allow (update, delete): An authenticated user can update/delete a Code Article if they are the owner and the document exists. Example: auth.uid = "user123"
-     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
-     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
-     * @principle Enforces document ownership for writes; allows public reads.
+     * @description Grants public read access to vision insights and restricts write access.
+     * @path /vision_insights/{visionInsightId}
+     * @allow (get, list)
+     * @allow (create, update, delete) User must be authenticated.
+     * @deny (create, update, delete) if user is not authenticated.
+     * @principle Public read access with owner-only writes.
      */
-    match /articles/{articleId} {
+    match /vision_insights/{visionInsightId} {
       allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if isExistingOwner(resource.data.ownerId);
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Allows anyone to read Community Insights, but restricts creation, updates, and deletion to authenticated owners.
-     * @path /databases/{database}/documents/insights/{insightId}
-     * @allow (get, list): Anyone can read Community Insights.
-     * @allow (create): An authenticated user can create a Community Insight if they are the owner. Example: auth.uid = "user123"
-     * @allow (update, delete): An authenticated user can update/delete a Community Insight if they are the owner and the document exists. Example: auth.uid = "user123"
-     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
-     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
-     * @principle Enforces document ownership for writes; allows public reads.
+     * @description Enforces path-based ownership for user interaction data.
+     * @path /users/{userId}/interactions/{interactionId}
+     * @allow (create) User must be authenticated and userId must match request.auth.uid.
+     * @allow (get, list, update, delete) User must be authenticated and userId must match request.auth.uid.
+     * @deny (create) if user is not authenticated or userId does not match request.auth.uid.
+     * @deny (get, list, update, delete) if user is not authenticated or userId does not match request.auth.uid.
+     * @principle Enforces document ownership for all operations.
      */
-    match /insights/{insightId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if isExistingOwner(resource.data.ownerId);
+    match /users/{userId}/interactions/{interactionId} {
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if isSignedIn() && isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && resource.data.userId == userId;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
     }
+  }
 
-    /**
-     * @description Allows anyone to read Code Documents, but restricts creation, updates, and deletion to authenticated owners.
-     * @path /databases/{database}/documents/documents/{documentId}
-     * @allow (get, list): Anyone can read Code Documents.
-     * @allow (create): An authenticated user can create a Code Document if they are the owner. Example: auth.uid = "user123"
-     * @allow (update, delete): An authenticated user can update/delete a Code Document if they are the owner and the document exists. Example: auth.uid = "user123"
-     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
-     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
-     * @principle Enforces document ownership for writes; allows public reads.
-     */
-    match /documents/{documentId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if isExistingOwner(resource.data.ownerId);
-    }
+  // Helper functions
+  function isSignedIn() {
+    return request.auth != null;
+  }
 
-    function isSignedIn() {
-      return request.auth != null;
-    }
+  function isOwner(userId) {
+    return request.auth.uid == userId;
+  }
 
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-
-    function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-    }
+  function isExistingOwner(userId) {
+    return isSignedIn() && isOwner(userId) && resource != null;
   }
 }
