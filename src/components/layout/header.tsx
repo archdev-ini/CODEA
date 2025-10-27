@@ -56,11 +56,6 @@ export default function Header() {
                     Community
                   </Link>
                 </SheetClose>
-                 <SheetClose asChild>
-                  <Link href="/admin" className="text-lg">
-                    Admin
-                  </Link>
-                </SheetClose>
               </div>
             </SheetContent>
           </Sheet>
@@ -74,9 +69,6 @@ export default function Header() {
             </Button>
             <Button variant="link" asChild>
               <Link href="/community">Community</Link>
-            </Button>
-            <Button variant="link" asChild>
-              <Link href="/admin">Admin</Link>
             </Button>
           </nav>
         )}
