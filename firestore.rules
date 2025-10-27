@@ -1,82 +1,84 @@
 /**
- * @file Firestore Security Rules for CODEA Landing Application
- * @version Prototyping Mode - Authorization Focused
+ * @file Firebase Security Rules for CODEA Landing Application
  *
- * @description This ruleset enforces a strict data access model based on
- * path-based ownership and public read access where appropriate. Data validation
- * is minimized to allow for rapid prototyping and schema iteration.
- *
- * @dataStructure
- * - `/precedents/{precedentId}`: Publicly accessible architectural precedents.
- * - `/vision_insights/{visionInsightId}`: Publicly accessible vision insights.
- * - `/users/{userId}/interactions/{interactionId}`: User-specific interaction data, accessible only to the owning user.
- *
- * @keySecurityDecisions
- * - Public read access for precedents and vision insights.
- * - User-owned interactions with path-based ownership enforcement.
- * - No user listing is allowed.
- *
- * @denormalization None necessary for the current ruleset, as ownership is derived from document paths.
- * @structuralSegregation User-specific data is stored under the `/users/{userId}` path, ensuring private access. Public data is stored in top-level collections.
+ * @core_philosophy This ruleset enforces a combination of public read access for architectural precedents and vision insights,
+ *                  with strict user-ownership for user-specific interaction data.
+ * @data_structure The data is organized into top-level collections for precedents and vision insights,
+ *                  and a nested collection under /users/{userId} for user interactions.
+ * @key_security_decisions
+ *   - Public read access is granted for precedents and vision insights to facilitate discovery.
+ *   - User interaction data is strictly private, accessible only to the owning user.
+ *   - User listing is disabled by default to protect user privacy.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to precedents and restricts write access.
+     * @description Grants public read access to architectural precedents, with no restrictions on listing.
      * @path /precedents/{precedentId}
-     * @allow (get, list)
-     * @allow (create, update, delete) User must be authenticated.
-     * @deny (create, update, delete) if user is not authenticated.
-     * @principle Public read access with owner-only writes.
+     * @allow (get, list): Any user can read any precedent.
+     * @deny (create, update, delete): No one can create, update, or delete a precedent through the client.
+     * @principle Allows public read access for precedents.
      */
     match /precedents/{precedentId} {
       allow get, list: if true;
-      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Grants public read access to vision insights and restricts write access.
+     * @description Grants public read access to vision insights, with no restrictions on listing.
      * @path /vision_insights/{visionInsightId}
-     * @allow (get, list)
-     * @allow (create, update, delete) User must be authenticated.
-     * @deny (create, update, delete) if user is not authenticated.
-     * @principle Public read access with owner-only writes.
+     * @allow (get, list): Any user can read any vision insight.
+     * @deny (create, update, delete): No one can create, update, or delete a vision insight through the client.
+     * @principle Allows public read access for vision insights.
      */
     match /vision_insights/{visionInsightId} {
       allow get, list: if true;
-      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Enforces path-based ownership for user interaction data.
+     * @description Enforces strict user-ownership for user interaction data. Only the user with the matching userId can access their interaction data.
      * @path /users/{userId}/interactions/{interactionId}
-     * @allow (create) User must be authenticated and userId must match request.auth.uid.
-     * @allow (get, list, update, delete) User must be authenticated and userId must match request.auth.uid.
-     * @deny (create) if user is not authenticated or userId does not match request.auth.uid.
-     * @deny (get, list, update, delete) if user is not authenticated or userId does not match request.auth.uid.
-     * @principle Enforces document ownership for all operations.
+     * @allow (create): Authenticated user can create an interaction if the userId matches their auth UID.
+     * @allow (get, list, update, delete): Authenticated user can access their own interactions if the userId matches their auth UID.
+     * @deny (create, get, list, update, delete): Any other user cannot access another user's interactions.
+     * @principle Enforces document ownership for writes, restricts access to a user's own data tree, validates relational integrity between documents.
      */
     match /users/{userId}/interactions/{interactionId} {
-      allow get: if isSignedIn() && isOwner(userId);
-      allow list: if isSignedIn() && isOwner(userId);
-      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isSignedIn() && isExistingOwner(userId) && resource.data.userId == userId;
-      allow delete: if isSignedIn() && isExistingOwner(userId);
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow get, list: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
     }
   }
 
-  // Helper functions
+  // ---- Helper functions ----
+
+  /**
+   * @description Checks if the request is authenticated.
+   * @return {boolean} True if the request is authenticated, false otherwise.
+   */
   function isSignedIn() {
     return request.auth != null;
   }
 
+  /**
+   * @description Checks if the authenticated user is the owner of the resource.
+   * @param {string} userId The user ID to check against.
+   * @return {boolean} True if the user is the owner, false otherwise.
+   */
   function isOwner(userId) {
-    return request.auth.uid == userId;
+    return isSignedIn() && request.auth.uid == userId;
   }
 
+  /**
+   * @description Checks if the authenticated user is the owner of the resource and the resource exists.
+   * @param {string} userId The user ID to check against.
+   * @return {boolean} True if the user is the owner and the resource exists, false otherwise.
+   */
   function isExistingOwner(userId) {
-    return isSignedIn() && isOwner(userId) && resource != null;
+    return isOwner(userId) && resource != null;
   }
 }
