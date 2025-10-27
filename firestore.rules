@@ -1,22 +1,105 @@
+/**
+ * @fileoverview Firestore Security Rules for Prototyping.
+ *
+ * Core Philosophy:
+ * This ruleset prioritizes rapid prototyping by focusing on authorization and skipping data validation.
+ * It assumes a public-read, owner-write model for most collections unless otherwise specified.
+ *
+ * Data Structure:
+ * The Firestore database contains the following top-level collections:
+ * - /jurisdictions/{jurisdictionId}:  Geographical and political jurisdictions.
+ * - /articles/{articleId}: Building code articles linked to jurisdictions.
+ * - /insights/{insightId}: Community-submitted insights.
+ * - /documents/{documentId}: Uploaded code documents with extracted content.
+ *
+ * Key Security Decisions:
+ * - Public Read: `get` and `list` operations are generally allowed for all users. This may change if it's determined that private user data should be added to some collections.
+ * - Owner-Only Writes: `create`, `update`, and `delete` operations are restricted to the document owner.
+ * - No User Listing: Listing all users is not permitted.
+ *
+ * Denormalization for Authorization:
+ * The current data model does not include explicit ownership fields on the documents in `/articles`, `/insights`, and `/documents`.
+ * To enable owner-only writes for these collections, we'll assume the existence of an `ownerId` field and enforce that the `ownerId` matches the authenticated user's UID for `create`, `update`, and `delete` operations.
+ * If the `ownerId` field is not present in the schema, the rules will include a `TODO` comment, indicating that the schema needs to be updated.
+ */
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // By default, deny all reads and writes.
-    match /{document=**} {
-      allow read, write: if false;
-    }
 
-    // Allow public read access to jurisdictions, but restrict writes.
+    /**
+     * @description Allows anyone to read Jurisdictions, but restricts creation, updates, and deletion to authenticated owners.
+     * @path /databases/{database}/documents/jurisdictions/{jurisdictionId}
+     * @allow (get, list): Anyone can read Jurisdictions.
+     * @allow (create): An authenticated user can create a Jurisdiction if they are the owner. Example: auth.uid = "user123"
+     * @allow (update, delete): An authenticated user can update/delete a Jurisdiction if they are the owner and the document exists. Example: auth.uid = "user123"
+     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
+     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
+     * @principle Enforces document ownership for writes; allows public reads.
+     */
     match /jurisdictions/{jurisdictionId} {
-      allow read: if true;
-      allow write: if request.auth != null; // Only authenticated users can write
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isExistingOwner(resource.data.ownerId);
     }
 
-    // Allow public read access to articles, but restrict writes.
+    /**
+     * @description Allows anyone to read Code Articles, but restricts creation, updates, and deletion to authenticated owners.
+     * @path /databases/{database}/documents/articles/{articleId}
+     * @allow (get, list): Anyone can read Code Articles.
+     * @allow (create): An authenticated user can create a Code Article if they are the owner. Example: auth.uid = "user123"
+     * @allow (update, delete): An authenticated user can update/delete a Code Article if they are the owner and the document exists. Example: auth.uid = "user123"
+     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
+     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
+     * @principle Enforces document ownership for writes; allows public reads.
+     */
     match /articles/{articleId} {
-      allow read: if true;
-      allow write: if request.auth != null; // Only authenticated users can write
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isExistingOwner(resource.data.ownerId);
+    }
+
+    /**
+     * @description Allows anyone to read Community Insights, but restricts creation, updates, and deletion to authenticated owners.
+     * @path /databases/{database}/documents/insights/{insightId}
+     * @allow (get, list): Anyone can read Community Insights.
+     * @allow (create): An authenticated user can create a Community Insight if they are the owner. Example: auth.uid = "user123"
+     * @allow (update, delete): An authenticated user can update/delete a Community Insight if they are the owner and the document exists. Example: auth.uid = "user123"
+     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
+     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
+     * @principle Enforces document ownership for writes; allows public reads.
+     */
+    match /insights/{insightId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isExistingOwner(resource.data.ownerId);
+    }
+
+    /**
+     * @description Allows anyone to read Code Documents, but restricts creation, updates, and deletion to authenticated owners.
+     * @path /databases/{database}/documents/documents/{documentId}
+     * @allow (get, list): Anyone can read Code Documents.
+     * @allow (create): An authenticated user can create a Code Document if they are the owner. Example: auth.uid = "user123"
+     * @allow (update, delete): An authenticated user can update/delete a Code Document if they are the owner and the document exists. Example: auth.uid = "user123"
+     * @deny create: If the `ownerId` field does not match the authenticated user's UID.
+     * @deny update, delete: If the document does not exist or the authenticated user is not the owner.
+     * @principle Enforces document ownership for writes; allows public reads.
+     */
+    match /documents/{documentId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isExistingOwner(resource.data.ownerId);
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
     }
   }
 }
