@@ -1,3 +1,4 @@
+
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import JurisdictionHeader from '@/components/sections/codes/jurisdiction-header';
@@ -19,7 +20,7 @@ export default function CodesSubPage({ params }: CodesSubPageProps) {
         <JurisdictionHeader jurisdictionId={params.jurisdictionId} />
         <CodeCategories />
         <CodeArticleList jurisdictionId={params.jurisdictionId} />
-        <CommunityInsights />
+        <CommunityInsights jurisdictionId={params.jurisdictionId} />
       </main>
       <Footer />
     </div>
