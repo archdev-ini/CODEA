@@ -24,6 +24,15 @@ import {
 } from '@/components/ui/form';
 import { Loader2, UploadCloud } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { uploadDocument } from '@/app/actions';
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ACCEPTED_FILE_TYPES = [
+  'application/pdf',
+  'text/plain',
+  'text/markdown',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+];
 
 const uploadSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
@@ -32,12 +41,26 @@ const uploadSchema = z.object({
     .any()
     .refine((files) => files?.length == 1, 'File is required.')
     .refine(
-      (files) => ['application/pdf', 'text/plain', 'text/markdown'].includes(files?.[0]?.type),
-      'Only .pdf, .txt, and .md files are accepted.'
+      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      `Max file size is 10MB.`
+    )
+    .refine(
+      (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
+      'Only .pdf, .docx, .txt, and .md files are accepted.'
     ),
 });
 
 type UploadFormValues = z.infer<typeof uploadSchema>;
+
+// Helper to read file as text
+const readFileAsText = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
+};
 
 export default function UploadDocumentForm() {
   const { toast } = useToast();
@@ -52,18 +75,38 @@ export default function UploadDocumentForm() {
 
   async function onSubmit(data: UploadFormValues) {
     setIsLoading(true);
-    // Placeholder for AI extraction logic
-    console.log('Form data:', data);
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate AI processing
-    setIsLoading(false);
-    
-    toast({
-      title: 'Processing Started',
-      description: `The document "${data.file[0].name}" is being processed by the AI.`,
-    });
-    
-    form.reset();
-    setFileName('');
+    try {
+      const file = data.file[0];
+      const fileContent = await readFileAsText(file);
+
+      const result = await uploadDocument({
+        title: data.title,
+        fileContent: fileContent,
+        fileName: file.name,
+        tags: data.tags,
+      });
+
+      if (result.success) {
+        toast({
+          title: 'Document Processed & Saved',
+          description: `"${data.title}" is now available in the library.`,
+        });
+        form.reset();
+        setFileName('');
+      } else {
+        throw new Error(result.error || 'An unknown error occurred.');
+      }
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Processing Failed',
+        description:
+          error.message ||
+          'An error occurred while processing the document.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -71,7 +114,7 @@ export default function UploadDocumentForm() {
       <CardHeader>
         <CardTitle>Upload Code Document</CardTitle>
         <CardDescription>
-          Upload a document (.pdf, .txt, .md) to be processed by the AI.
+          Upload a document (.pdf, .docx, .txt, .md) to be processed by the AI.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -84,7 +127,10 @@ export default function UploadDocumentForm() {
                 <FormItem>
                   <FormLabel>Document Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Lagos State Urban and Regional Planning Law" {...field} />
+                    <Input
+                      placeholder="e.g., Lagos State Urban and Regional Planning Law"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,60 +143,72 @@ export default function UploadDocumentForm() {
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., zoning, permits, residential" {...field} />
+                    <Input
+                      placeholder="e.g., zoning, permits, residential"
+                      {...field}
+                    />
                   </FormControl>
-                   <FormDescription>
-                    Comma-separated list of keywords.
+                  <FormDescription>
+                    Comma-separated list of keywords. The AI will add more.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-             <FormField
-                control={form.control}
-                name="file"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Source Document</FormLabel>
-                    <FormControl>
-                      <div className="mt-2 flex justify-center rounded-lg border border-dashed border-input px-6 py-10">
-                        <div className="text-center">
-                          <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
-                          <div className="mt-4 flex text-sm leading-6 text-muted-foreground">
-                            <label
-                              htmlFor="file-upload"
-                              className="relative cursor-pointer rounded-md font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:text-primary/80"
-                            >
-                              <span>Upload a file</span>
-                              <input
-                                id="file-upload"
-                                type="file"
-                                className="sr-only"
-                                {...fileRef}
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    setFileName(file.name);
-                                    field.onChange(e.target.files);
-                                  }
-                                }}
-                              />
-                            </label>
-                            <p className="pl-1">or drag and drop</p>
-                          </div>
-                          <p className="text-xs leading-5 text-muted-foreground">
-                            PDF, TXT, MD up to 10MB
-                          </p>
+            <FormField
+              control={form.control}
+              name="file"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Source Document</FormLabel>
+                  <FormControl>
+                    <div className="mt-2 flex justify-center rounded-lg border border-dashed border-input px-6 py-10">
+                      <div className="text-center">
+                        <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
+                        <div className="mt-4 flex text-sm leading-6 text-muted-foreground">
+                          <label
+                            htmlFor="file-upload"
+                            className="relative cursor-pointer rounded-md font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:text-primary/80"
+                          >
+                            <span>Upload a file</span>
+                            <input
+                              id="file-upload"
+                              type="file"
+                              className="sr-only"
+                              {...fileRef}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  setFileName(file.name);
+                                  field.onChange(e.target.files);
+                                }
+                              }}
+                            />
+                          </label>
+                          <p className="pl-1">or drag and drop</p>
                         </div>
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          PDF, DOCX, TXT, MD up to 10MB
+                        </p>
                       </div>
-                    </FormControl>
-                    {fileName && <FormDescription className="pt-2">Selected file: {fileName}</FormDescription>}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    </div>
+                  </FormControl>
+                  {fileName && (
+                    <FormDescription className="pt-2">
+                      Selected file: {fileName}
+                    </FormDescription>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -1,6 +1,7 @@
 'use server';
 
 import { adminDb } from '@/firebase/server';
+import { extractDocumentText } from '@/ai/flows/extract-document-text';
 
 type Jurisdiction = {
   name: string;
@@ -65,6 +66,41 @@ export async function submitContribution(contribution: Contribution) {
     return { success: true };
   } catch (error: any) {
     console.error('Error submitting contribution:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+type UploadDocumentPayload = {
+  title: string;
+  fileContent: string;
+  fileName: string;
+  tags?: string;
+};
+
+export async function uploadDocument(payload: UploadDocumentPayload) {
+  try {
+    const aiResult = await extractDocumentText({
+      documentText: payload.fileContent,
+    });
+
+    const userTags = payload.tags
+      ? payload.tags.split(',').map((t) => t.trim())
+      : [];
+    const allTags = [...new Set([...userTags, ...aiResult.tags])];
+
+    await adminDb.collection('documents').add({
+      title: payload.title,
+      sourceFile: payload.fileName,
+      content: aiResult.extractedText,
+      summary: aiResult.summary,
+      tags: allTags,
+      uploadedBy: 'admin', // Placeholder for user management
+      createdAt: new Date().toISOString(),
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error uploading document:', error);
     return { success: false, error: error.message };
   }
 }
