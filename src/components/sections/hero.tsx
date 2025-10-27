@@ -4,17 +4,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import GradientText from '@/components/ui/gradient-text';
-import DarkVeil from '@/components/ui/DarkVeil';
 
 export default function Hero() {
   return (
-    <section className="relative py-20 md:py-32 bg-background overflow-hidden min-h-[60vh] md:min-h-screen flex items-center">
-      <DarkVeil
-        speed={0.2}
-        warpAmount={0.3}
-        noiseIntensity={0.05}
-        resolutionScale={0.5}
-      />
+    <section className="relative py-20 md:py-32 bg-background overflow-hidden min-h-[60vh] md:min-h-[80vh] flex items-center">
       <div className="container mx-auto text-center px-4 relative z-10">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-primary mb-6 font-headline">
           <GradientText>
