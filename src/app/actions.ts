@@ -137,3 +137,48 @@ export async function requestJurisdiction(request: JurisdictionRequest) {
     return { success: false, error: error.message };
   }
 }
+
+export async function updateInsightStatus(
+  insightId: string,
+  status: 'APPROVED' | 'REJECTED'
+) {
+  try {
+    await adminDb.collection('insights').doc(insightId).update({ status });
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function handleJurisdictionRequest(
+  requestId: string,
+  action: 'APPROVE' | 'REJECT',
+  jurisdictionData?: { name: string; level: string }
+) {
+  try {
+    const requestRef = adminDb.collection('requests').doc(requestId);
+
+    if (action === 'APPROVE') {
+      if (!jurisdictionData) {
+        throw new Error('Jurisdiction data is required for approval.');
+      }
+      // Use a transaction to ensure atomicity
+      await adminDb.runTransaction(async (transaction) => {
+        // 1. Add the new jurisdiction
+        const newJurisdictionRef = adminDb.collection('jurisdictions').doc();
+        transaction.set(newJurisdictionRef, {
+          ...jurisdictionData,
+          articleCount: 0,
+        });
+        // 2. Update the request status
+        transaction.update(requestRef, { status: 'APPROVED' });
+      });
+    } else {
+      // Just reject the request
+      await requestRef.update({ status: 'REJECTED' });
+    }
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
