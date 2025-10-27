@@ -26,13 +26,13 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // If auth state is not loading and the user is anonymous, redirect to login.
-    if (!isUserLoading && user?.isAnonymous) {
+    // If auth state is not loading and there is no user (or user is anonymous), redirect to login.
+    if (!isUserLoading && (!user || user.isAnonymous)) {
       router.push('/login?redirect=/admin');
     }
   }, [user, isUserLoading, router]);
 
-  // If user is loading or is anonymous (and redirecting), show a loading state.
+  // If user is loading or is not authenticated (and redirecting), show a loading state.
   if (isUserLoading || !user || user.isAnonymous) {
     return (
       <div className="flex flex-col min-h-screen bg-background">
@@ -51,7 +51,7 @@ export default function AdminPage() {
     );
   }
 
-  // Render the admin portal if the user is not anonymous.
+  // Render the admin portal if the user is authenticated.
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
