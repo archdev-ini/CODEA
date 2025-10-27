@@ -4,8 +4,12 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import GradientText from '@/components/ui/gradient-text';
+import Countdown from '@/components/sections/countdown';
+import config from '@/lib/config.json';
 
 export default function Hero() {
+  const launchDate = new Date(config.launchDate);
+
   return (
     <section className="relative py-20 md:py-32 bg-background overflow-hidden min-h-[60vh] md:min-h-[80vh] flex items-center">
       <div className="container mx-auto text-center px-4 relative z-10">
@@ -19,15 +23,13 @@ export default function Hero() {
           intelligence across Africa. When you receive a new project, this is
           where you begin.
         </p>
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Button size="lg" asChild>
-            <Link href="/about">
-              <ArrowRight className="mr-2 h-5 w-5 -rotate-45" />
-              About CODEA
-            </Link>
-          </Button>
+        <div className="flex flex-col items-center gap-8">
+          <Countdown date={launchDate} />
+          <p className="text-sm uppercase tracking-widest text-muted-foreground">
+            Launching February 2026
+          </p>
           <Button size="lg" variant="outline" asChild>
-            <Link href="/codes">Explore the Codes</Link>
+            <Link href="/codes">Explore the Platform</Link>
           </Button>
         </div>
       </div>
