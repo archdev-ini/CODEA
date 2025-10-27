@@ -84,8 +84,10 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           // This is critical for apps with public data access secured by rules
           // that require any form of authentication.
           signInAnonymously(auth);
+          // Note: We don't set user state here. The listener will be called again with the new anonymous user.
+        } else {
+           setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         }
-        setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
       },
       (error) => { // Auth listener error
         console.error("FirebaseProvider: onAuthStateChanged error:", error);
@@ -108,6 +110,12 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       userError: userAuthState.userError,
     };
   }, [firebaseApp, firestore, auth, userAuthState]);
+  
+  // Render children only after the initial user loading is complete
+  // This prevents child components from making authenticated requests before the user is known.
+  if (userAuthState.isUserLoading) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <FirebaseContext.Provider value={contextValue}>
