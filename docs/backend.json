@@ -49,6 +49,21 @@
         "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"], "default": "PENDING" }
       },
       "required": ["jurisdictionId", "section", "title", "description", "createdAt"]
+    },
+    "CodeDocument": {
+      "title": "Code Document",
+      "description": "Represents an uploaded document containing code regulations, standards, or guidelines. It stores both the original file reference and the AI-extracted content.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "User-defined title for the document." },
+        "sourceFile": { "type": "string", "description": "Name of the original uploaded file." },
+        "content": { "type": "string", "description": "Full text content extracted from the document by an AI model." },
+        "summary": { "type": "string", "description": "A brief, AI-generated summary of the document's content." },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Keywords or tags for categorization." },
+        "uploadedBy": { "type": "string", "description": "Identifier of the user or admin who uploaded the file." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the document was uploaded." }
+      },
+      "required": ["title", "sourceFile", "content", "uploadedBy", "createdAt"]
     }
   },
   "auth": {
@@ -69,6 +84,10 @@
     "/insights/{insightId}": {
       "schema": { "$ref": "#/entities/CommunityInsight" },
       "description": "Collection of community-submitted insights and observations."
+    },
+    "/documents/{documentId}": {
+      "schema": { "$ref": "#/entities/CodeDocument" },
+      "description": "Collection of uploaded documents with their AI-extracted text content."
     }
   }
 }

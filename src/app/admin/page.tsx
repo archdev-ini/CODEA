@@ -3,6 +3,7 @@ import Footer from '@/components/layout/footer';
 import AddJurisdictionForm from '@/components/sections/admin/add-jurisdiction-form';
 import AddCodeArticleForm from '@/components/sections/admin/add-code-article-form';
 import { Separator } from '@/components/ui/separator';
+import UploadDocumentForm from '@/components/sections/admin/upload-document-form';
 
 export default function AdminPage() {
   return (
@@ -10,6 +11,8 @@ export default function AdminPage() {
       <Header />
       <main className="flex-grow py-20 md:py-28">
         <div className="container mx-auto px-4 space-y-16">
+          <UploadDocumentForm />
+          <Separator />
           <AddJurisdictionForm />
           <Separator />
           <AddCodeArticleForm />
