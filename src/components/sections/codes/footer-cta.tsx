@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function FooterCta() {
   return (
@@ -11,9 +12,13 @@ export default function FooterCta() {
           Help us fill the gaps and visualize Africa’s codes together.
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Button size="lg">Submit Local Regulation</Button>
-          <Button size="lg" variant="outline">
-            Join Discord
+          <Button size="lg" asChild>
+            <Link href="/community">Submit Local Regulation</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="#" target="_blank" rel="noopener noreferrer">
+              Join Discord
+            </Link>
           </Button>
         </div>
       </div>
