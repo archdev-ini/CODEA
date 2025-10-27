@@ -29,7 +29,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import SpotlightCard from '@/components/ui/SpotlightCard';
 import { collection, query } from 'firebase/firestore';
@@ -293,33 +293,6 @@ export default function ContributionForm() {
                       </FormItem>
                     )}
                   />
-                </div>
-
-                <div>
-                  <FormLabel>Supporting File</FormLabel>
-                  <div className="mt-2 flex justify-center rounded-lg border border-dashed border-input px-6 py-10">
-                    <div className="text-center">
-                      <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
-                      <div className="mt-4 flex text-sm leading-6 text-muted-foreground">
-                        <label
-                          htmlFor="file-upload"
-                          className="relative cursor-pointer rounded-md font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:text-primary/80"
-                        >
-                          <span>Upload a file</span>
-                          <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            className="sr-only"
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
-                      </div>
-                      <p className="text-xs leading-5 text-muted-foreground">
-                        PDF, PNG, JPG up to 10MB
-                      </p>
-                    </div>
-                  </div>
                 </div>
 
                 <Button
