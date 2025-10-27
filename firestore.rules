@@ -1,103 +1,82 @@
 /**
- * @file Firestore Security Rules for CODEA Landing Application
+ * @fileOverview Firestore Security Rules for the CODEA Landing application.
  *
- * @core_philosophy This ruleset implements a hybrid security model:
- *   - Public data (precedents, vision insights) is readable by all users.
- *   - User-specific data (interactions) is strictly controlled, allowing only the owning user to access it.
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for private user data while allowing public read access to shared data.
  *
- * @data_structure
- *   - /precedents/{precedentId}: Stores publicly accessible architectural precedents.
- *   - /vision_insights/{visionInsightId}: Stores publicly accessible vision insights.
- *   - /users/{userId}/interactions/{interactionId}: Stores user-specific interaction data.  Only the user can access their own interactions.
+ * Data Structure:
+ * - `/precedents/{precedentId}`: Publicly accessible architectural precedents.
+ * - `/vision_insights/{visionInsightId}`: Publicly accessible vision insights.
+ * - `/users/{userId}/interactions/{interactionId}`: User-specific interaction data, accessible only by the owner.
  *
- * @key_security_decisions
- *   - Public read access is granted to the 'precedents' and 'vision_insights' collections.
- *   - Listing of precedents and vision insights is allowed for all users.
- *   - User listing is disallowed for privacy.
- *   - The rules enforce strict ownership for user interactions, ensuring that only the owning user can create, read, update, or delete their own interaction data.
+ * Key Security Decisions:
+ * - Public read access to precedents and vision insights is granted.
+ * - User listing is implicitly denied (no top-level `/users` collection with `list` enabled).
+ * - All write operations are protected by authorization checks to prevent unauthorized data modification.
+ * - Data validation is minimal to facilitate rapid prototyping, focusing on ownership checks and relational integrity.
+ *
+ * Denormalization for Authorization:
+ * - None explicitly required in this version, as path-based ownership is sufficient for user interactions and public data doesn't require ownership checks.
+ *
+ * Structural Segregation:
+ * - Private user interaction data is stored in a dedicated subcollection (`/users/{userId}/interactions/{interactionId}`) to isolate it from public data.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Checks if the request is made by the owner of the document.
-     * @param {string} userId - The user ID to compare against the request's authentication UID.
-     * @return {bool} True if the user ID matches the request's authentication UID, false otherwise.
-     */
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-
-    /**
-     * @description Checks if the user is signed in.
-     * @return {bool} True if the user is signed in, false otherwise.
-     */
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    /**
-     * @description Checks if the user is the owner of an existing document.
-     * @param {string} userId - The user ID to compare against the document's owner ID.
-     * @return {bool} True if the user ID matches the document's owner ID and the document exists.
-     */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource.data != null;
-    }
-
-    /**
-     * @description Rules for the 'precedents' collection.
+     * @description Grants public read access to architectural precedents and restricts writes.
      * @path /precedents/{precedentId}
-     * @allow (get, list) Any user can read precedents.
-     * @allow (create) No one can create precedents (only accessible via the console or server-side logic).
-     * @allow (update, delete) No one can update or delete precedents (only accessible via the console or server-side logic).
-     * @deny (create, update, delete) Prevents unauthorized modification of precedents.
-     * @principle Allows public read access to precedents while restricting write access.
+     * @allow (get, list): Any user can read the precedent.
+     * @deny (create, update, delete): No user can create, update, or delete a precedent.
+     * @principle Allows public read access for global data while restricting modification.
      */
     match /precedents/{precedentId} {
       allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Rules for the 'vision_insights' collection.
+     * @description Grants public read access to vision insights and restricts writes.
      * @path /vision_insights/{visionInsightId}
-     * @allow (get, list) Any user can read vision insights.
-     * @allow (create) No one can create vision insights (only accessible via the console or server-side logic).
-     * @allow (update, delete) No one can update or delete vision insights (only accessible via the console or server-side logic).
-     * @deny (create, update, delete) Prevents unauthorized modification of vision insights.
-     * @principle Allows public read access to vision insights while restricting write access.
+     * @allow (get, list): Any user can read the vision insight.
+     * @deny (create, update, delete): No user can create, update, or delete a vision insight.
+     * @principle Allows public read access for global data while restricting modification.
      */
     match /vision_insights/{visionInsightId} {
       allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow create, update, delete: if false;
     }
 
     /**
-     * @description Rules for the 'interactions' subcollection under each user.
+     * @description Manages user interaction data, allowing each user to access only their own data.
      * @path /users/{userId}/interactions/{interactionId}
-     * @allow (get, list) User can read their own interactions.
-     * @allow (create) User can create interactions under their own user ID.
-     * @allow (update, delete) User can update/delete their own interactions.
-     * @deny (get, list) A user cannot read another user's interactions.
-     * @deny (create, update, delete) A user cannot create, update, or delete interactions under another user's ID.
-     * @principle Enforces path-based ownership: only the user with the matching userId can access their interaction data.
+     * @allow (create): A user can create an interaction if the userId matches their auth UID.
+     * @allow (get, list, update, delete): A user can get, list, update, or delete an interaction if the userId matches their auth UID.
+     * @deny (create): A user cannot create an interaction if the userId does not match their auth UID.
+     * @deny (get, list, update, delete): A user cannot get, list, update, or delete an interaction if the userId does not match their auth UID.
+     * @principle Enforces document ownership for writes and reads within a user's data tree.
      */
     match /users/{userId}/interactions/{interactionId} {
-      allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-      allow create: if isOwner(userId) && isSignedIn();
-      allow update: if isExistingOwner(userId);
-      allow delete: if isExistingOwner(userId);
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if isSignedIn() && isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && resource.data.userId == userId;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
     }
+  }
 
-     match /users/{userId} {
-      allow read, write: if false;
-    }
+  // Helper functions
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  function isOwner(userId) {
+    return request.auth.uid == userId;
+  }
+
+  function isExistingOwner(userId) {
+    return isOwner(userId) && resource != null;
   }
 }
