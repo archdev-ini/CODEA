@@ -1,7 +1,9 @@
+
 'use server';
 
 import { adminDb } from '@/firebase/server';
 import { extractDocumentText } from '@/ai/flows/extract-document-text';
+import { FieldValue } from 'firebase-admin/firestore';
 
 type Jurisdiction = {
   name: string;
@@ -11,8 +13,8 @@ type Jurisdiction = {
 export async function addJurisdiction(jurisdiction: Jurisdiction) {
   try {
     await adminDb.collection('jurisdictions').add({
-      name: jurisdiction.name,
-      level: jurisdiction.level,
+      ...jurisdiction,
+      articleCount: 0,
     });
 
     return { success: true };
@@ -33,8 +35,20 @@ type CodeArticle = {
 
 export async function addCodeArticle(article: CodeArticle) {
   try {
-    // We can add more fields from the schema as needed in the form
-    await adminDb.collection('articles').add(article);
+    const jurisdictionRef = adminDb
+      .collection('jurisdictions')
+      .doc(article.jurisdictionId);
+    const newArticleRef = adminDb.collection('articles').doc();
+
+    await adminDb.runTransaction(async (transaction) => {
+      // 1. Create the new article document
+      transaction.set(newArticleRef, article);
+      // 2. Atomically increment the article count on the parent jurisdiction
+      transaction.update(jurisdictionRef, {
+        articleCount: FieldValue.increment(1),
+      });
+    });
+
     return { success: true };
   } catch (error: any) {
     console.error('Error adding code article:', error);

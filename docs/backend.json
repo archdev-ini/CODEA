@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Jurisdiction": {
@@ -7,7 +8,8 @@
       "properties": {
         "name": { "type": "string", "description": "Official name of the jurisdiction (e.g., 'Nigeria', 'Lagos State')." },
         "level": { "type": "string", "enum": ["CONTINENTAL", "REGIONAL", "NATIONAL", "STATE_PROVINCIAL", "CITY_MUNICIPAL", "INDIGENOUS"], "description": "The hierarchical level of the jurisdiction." },
-        "parent": { "type": "string", "description": "Reference to the parent jurisdiction's ID, if any." }
+        "parent": { "type": "string", "description": "Reference to the parent jurisdiction's ID, if any." },
+        "articleCount": { "type": "number", "description": "The total number of code articles associated with this jurisdiction." }
       },
       "required": ["name", "level"]
     },
