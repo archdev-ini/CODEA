@@ -24,7 +24,10 @@ import {
 } from '@/components/ui/form';
 import { Loader2, UploadCloud } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { uploadDocument } from '@/app/actions';
+import { extractDocumentText } from '@/ai/flows/extract-document-text';
+import { useFirestore, useUser } from '@/firebase';
+import { collection, addDoc } from 'firebase/firestore';
+
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_FILE_TYPES = [
@@ -66,6 +69,8 @@ export default function UploadDocumentForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState('');
+  const firestore = useFirestore();
+  const { user } = useUser();
 
   const form = useForm<UploadFormValues>({
     resolver: zodResolver(uploadSchema),
@@ -74,28 +79,47 @@ export default function UploadDocumentForm() {
   const fileRef = form.register('file');
 
   async function onSubmit(data: UploadFormValues) {
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Authentication Error',
+        description: 'You must be logged in to upload documents.',
+      });
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const file = data.file[0];
       const fileContent = await readFileAsText(file);
 
-      const result = await uploadDocument({
-        title: data.title,
-        fileContent: fileContent,
-        fileName: file.name,
-        tags: data.tags,
+      const aiResult = await extractDocumentText({
+        documentText: fileContent,
       });
 
-      if (result.success) {
-        toast({
-          title: 'Document Processed & Saved',
-          description: `"${data.title}" is now available in the library.`,
-        });
-        form.reset();
-        setFileName('');
-      } else {
-        throw new Error(result.error || 'An unknown error occurred.');
-      }
+      const userTags = data.tags
+        ? data.tags.split(',').map((t) => t.trim())
+        : [];
+      const allTags = [...new Set([...userTags, ...aiResult.tags])];
+
+      const documentsCol = collection(firestore, 'documents');
+      await addDoc(documentsCol, {
+        title: data.title,
+        sourceFile: file.name,
+        content: aiResult.extractedText,
+        summary: aiResult.summary,
+        tags: allTags,
+        uploadedBy: user.uid,
+        createdAt: new Date().toISOString(),
+      });
+
+      toast({
+        title: 'Document Processed & Saved',
+        description: `"${data.title}" is now available in the library.`,
+      });
+      form.reset();
+      setFileName('');
+
     } catch (error: any) {
       toast({
         variant: 'destructive',

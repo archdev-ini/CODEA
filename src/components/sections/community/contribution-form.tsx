@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -43,9 +42,8 @@ import {
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import SpotlightCard from '@/components/ui/SpotlightCard';
-import { collection, query } from 'firebase/firestore';
+import { collection, query, addDoc } from 'firebase/firestore';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { submitContribution, requestJurisdiction } from '@/app/actions';
 
 const contributionSchema = z.object({
   country: z.string().min(1, 'Country is required'),
@@ -76,6 +74,7 @@ function RequestJurisdictionDialog() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const firestore = useFirestore();
 
   const requestForm = useForm<RequestFormValues>({
     resolver: zodResolver(requestSchema),
@@ -84,22 +83,28 @@ function RequestJurisdictionDialog() {
 
   async function handleRequestSubmit(data: RequestFormValues) {
     setIsLoading(true);
-    const result = await requestJurisdiction(data);
-    setIsLoading(false);
+    try {
+      const requestsCol = collection(firestore, 'requests');
+      await addDoc(requestsCol, {
+        ...data,
+        status: 'PENDING',
+        createdAt: new Date().toISOString(),
+      });
 
-    if (result.success) {
       toast({
         title: 'Request Submitted',
         description: `Thank you for requesting "${data.name}". It will be reviewed shortly.`,
       });
       requestForm.reset();
       setIsOpen(false);
-    } else {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Request Failed',
-        description: result.error || 'An unexpected error occurred.',
+        description: error.message || 'An unexpected error occurred.',
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -185,23 +190,31 @@ export default function ContributionForm() {
 
   async function onSubmit(data: ContributionFormValues) {
     setIsLoading(true);
-    const result = await submitContribution(data);
-    setIsLoading(false);
-
-    if (result.success) {
+    try {
+      const { country, tags, ...rest } = data;
+      const insightsCol = collection(firestore, 'insights');
+      await addDoc(insightsCol, {
+        ...rest,
+        jurisdictionId: country, // Remapping country to jurisdictionId
+        tags: tags ? tags.split(',').map((tag) => tag.trim()) : [],
+        createdAt: new Date().toISOString(),
+        status: 'PENDING',
+      });
       toast({
         title: 'Contribution Submitted',
         description: 'Thank you! Your contribution is pending review.',
       });
       form.reset();
-    } else {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Submission Failed',
         description:
-          result.error ||
+          error.message ||
           'An error occurred while submitting your contribution.',
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 

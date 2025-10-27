@@ -1,16 +1,12 @@
-
 'use client';
 
 import { useState } from 'react';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, doc, runTransaction, updateDoc } from 'firebase/firestore';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -33,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { handleJurisdictionRequest } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 
 type JurisdictionRequest = {
@@ -42,17 +37,17 @@ type JurisdictionRequest = {
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
 };
 
-function ApproveDialog({
-  request,
-  onAction,
-}: {
+type ApproveDialogProps = {
   request: JurisdictionRequest;
   onAction: (
     id: string,
-    action: 'APPROVE',
-    data: { name: string; level: string }
+    action: 'APPROVE' | 'REJECT',
+    data?: { name: string; level: string }
   ) => void;
-}) {
+  isLoading: boolean;
+};
+
+function ApproveDialog({ request, onAction, isLoading }: ApproveDialogProps) {
   const [level, setLevel] = useState('');
   const [name, setName] = useState(request.name);
   const [isOpen, setIsOpen] = useState(false);
@@ -67,8 +62,8 @@ function ApproveDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
-          <Check className="h-4 w-4" />
+        <Button size="sm" disabled={isLoading}>
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
           <span className="ml-2">Approve</span>
         </Button>
       </DialogTrigger>
@@ -97,7 +92,8 @@ function ApproveDialog({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button onClick={handleSubmit} disabled={!name || !level}>
+          <Button onClick={handleSubmit} disabled={!name || !level || isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Confirm and Add
           </Button>
         </DialogFooter>
@@ -128,20 +124,37 @@ export default function RequestsReviewPanel() {
     jurisdictionData?: { name: string; level: string }
   ) => {
     setLoadingStates((prev) => ({ ...prev, [id]: true }));
-    const result = await handleJurisdictionRequest(id, action, jurisdictionData);
-    setLoadingStates((prev) => ({ ...prev, [id]: false }));
+    try {
+      const requestRef = doc(firestore, 'requests', id);
 
-    if (result.success) {
+      if (action === 'APPROVE') {
+        if (!jurisdictionData) {
+          throw new Error('Jurisdiction data is required for approval.');
+        }
+        await runTransaction(firestore, async (transaction) => {
+          const newJurisdictionRef = doc(collection(firestore, 'jurisdictions'));
+          transaction.set(newJurisdictionRef, {
+            ...jurisdictionData,
+            articleCount: 0,
+          });
+          transaction.update(requestRef, { status: 'APPROVED' });
+        });
+      } else { // REJECT
+        await updateDoc(requestRef, { status: 'REJECTED' });
+      }
+
       toast({
         title: `Request ${action.toLowerCase()}`,
         description: `The request has been processed.`,
       });
-    } else {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Action Failed',
-        description: result.error || 'An unexpected error occurred.',
+        description: error.message || 'An unexpected error occurred.',
       });
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -187,7 +200,7 @@ export default function RequestsReviewPanel() {
                     <X className="h-4 w-4" />
                   )}
                 </Button>
-                <ApproveDialog request={request} onAction={handleAction} />
+                <ApproveDialog request={request} onAction={handleAction} isLoading={!!loadingStates[request.id]} />
               </div>
             </CardContent>
           </Card>

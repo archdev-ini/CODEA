@@ -30,7 +30,8 @@ import {
 } from '@/components/ui/form';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { addJurisdiction } from '@/app/actions';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 const jurisdictionSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -49,6 +50,7 @@ type JurisdictionFormValues = z.infer<typeof jurisdictionSchema>;
 export default function AddJurisdictionForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const firestore = useFirestore();
 
   const form = useForm<JurisdictionFormValues>({
     resolver: zodResolver(jurisdictionSchema),
@@ -60,23 +62,28 @@ export default function AddJurisdictionForm() {
 
   async function onSubmit(data: JurisdictionFormValues) {
     setIsLoading(true);
-    const result = await addJurisdiction(data);
-    setIsLoading(false);
+    try {
+      const jurisdictionsCol = collection(firestore, 'jurisdictions');
+      await addDoc(jurisdictionsCol, {
+        ...data,
+        articleCount: 0,
+      });
 
-    if (result.success) {
       toast({
         title: 'Jurisdiction Added',
         description: `${data.name} has been added to the database.`,
       });
       form.reset();
-    } else {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Submission Failed',
         description:
-          result.error ||
+          error.message ||
           'An error occurred while adding the jurisdiction.',
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 

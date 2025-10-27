@@ -1,8 +1,7 @@
-
 'use client';
 
 import { useState } from 'react';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, doc, updateDoc } from 'firebase/firestore';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +15,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Check, Loader2, Terminal, X } from 'lucide-react';
-import { updateInsightStatus } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 
@@ -47,20 +45,21 @@ export default function InsightsReviewPanel() {
 
   const handleAction = async (id: string, status: 'APPROVED' | 'REJECTED') => {
     setLoadingStates((prev) => ({ ...prev, [id]: true }));
-    const result = await updateInsightStatus(id, status);
-    setLoadingStates((prev) => ({ ...prev, [id]: false }));
-
-    if (result.success) {
+    try {
+      const insightRef = doc(firestore, 'insights', id);
+      await updateDoc(insightRef, { status });
       toast({
         title: `Insight ${status.toLowerCase()}`,
         description: `The submission has been updated.`,
       });
-    } else {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Action Failed',
-        description: result.error || 'An unexpected error occurred.',
+        description: error.message || 'An unexpected error occurred.',
       });
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [id]: false }));
     }
   };
 

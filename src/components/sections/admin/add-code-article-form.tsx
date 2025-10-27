@@ -31,9 +31,8 @@ import {
 } from '@/components/ui/form';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { addCodeArticle } from '@/app/actions';
-import { collection, query } from 'firebase/firestore';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, runTransaction, doc, addDoc } from 'firebase/firestore';
 
 const articleSchema = z.object({
   jurisdictionId: z.string().min(1, 'Jurisdiction is required'),
@@ -76,22 +75,39 @@ export default function AddCodeArticleForm() {
 
   async function onSubmit(data: ArticleFormValues) {
     setIsLoading(true);
-    const result = await addCodeArticle(data);
-    setIsLoading(false);
+    try {
+      const jurisdictionRef = doc(firestore, 'jurisdictions', data.jurisdictionId);
+      const articlesCol = collection(firestore, 'articles');
+      
+      await runTransaction(firestore, async (transaction) => {
+        const jurisdictionDoc = await transaction.get(jurisdictionRef);
+        if (!jurisdictionDoc.exists()) {
+          throw new Error("Jurisdiction does not exist!");
+        }
 
-    if (result.success) {
+        // 1. Create the new article document (using addDoc equivalent inside transaction)
+        const newArticleRef = doc(articlesCol);
+        transaction.set(newArticleRef, data);
+        
+        // 2. Atomically increment the article count
+        const newArticleCount = (jurisdictionDoc.data().articleCount || 0) + 1;
+        transaction.update(jurisdictionRef, { articleCount: newArticleCount });
+      });
+
       toast({
         title: 'Code Article Added',
         description: `Article "${data.title}" has been added.`,
       });
       form.reset();
-    } else {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Submission Failed',
         description:
-          result.error || 'An error occurred while adding the article.',
+          error.message || 'An error occurred while adding the article.',
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
