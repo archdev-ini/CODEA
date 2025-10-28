@@ -15,7 +15,7 @@ export default function Hero() {
       <div className="container mx-auto text-center px-4 relative z-10">
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-primary mb-6 font-headline">
           <GradientText>
-            CODEA — Pan-African Architectural Intelligence
+            Pan-African Architectural Intelligence
           </GradientText>
         </h1>
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
