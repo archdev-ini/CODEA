@@ -10,8 +10,6 @@ import AddJurisdictionForm from '@/components/sections/admin/add-jurisdiction-fo
 import AddCodeArticleForm from '@/components/sections/admin/add-code-article-form';
 import { Separator } from '@/components/ui/separator';
 import UploadDocumentForm from '@/components/sections/admin/upload-document-form';
-import InsightsReviewPanel from '@/components/sections/admin/insights-review-panel';
-import RequestsReviewPanel from '@/components/sections/admin/requests-review-panel';
 import {
   Tabs,
   TabsContent,
@@ -60,32 +58,14 @@ export default function AdminPage() {
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight">Admin Portal</h1>
             <p className="text-muted-foreground mt-2">
-              Manage community submissions and platform data.
+              Manage platform data.
             </p>
           </div>
-          <Tabs defaultValue="insights" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
-              <TabsTrigger value="insights">Insights Review</TabsTrigger>
-              <TabsTrigger value="requests">Jurisdiction Requests</TabsTrigger>
+          <Tabs defaultValue="uploads" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 h-auto">
               <TabsTrigger value="uploads">Document Uploads</TabsTrigger>
               <TabsTrigger value="data">Data Management</TabsTrigger>
             </TabsList>
-
-            <TabsContent value="insights" className="mt-8">
-              <Card>
-                <CardContent className="p-6">
-                  <InsightsReviewPanel />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="requests" className="mt-8">
-              <Card>
-                <CardContent className="p-6">
-                  <RequestsReviewPanel />
-                </CardContent>
-              </Card>
-            </TabsContent>
 
             <TabsContent value="uploads" className="mt-8">
               <UploadDocumentForm />

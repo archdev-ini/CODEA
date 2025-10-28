@@ -33,12 +33,6 @@ export default function Footer() {
             >
               Code Library
             </Link>
-             <Link
-              href="/community"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Community
-            </Link>
           </nav>
           <nav className="flex flex-col gap-3 text-sm">
             <h3 className="font-semibold text-foreground mb-2">Support</h3>
