@@ -1,7 +1,7 @@
 'use client';
 
 import { doc } from 'firebase/firestore';
-import { useDoc, useFirestore } from '@/firebase';
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
 
 type Jurisdiction = {
@@ -18,7 +18,10 @@ export default function JurisdictionHeader({
   jurisdictionId,
 }: JurisdictionHeaderProps) {
   const firestore = useFirestore();
-  const jurisdictionRef = doc(firestore, 'jurisdictions', jurisdictionId);
+  const jurisdictionRef = useMemoFirebase(
+    () => doc(firestore, 'jurisdictions', jurisdictionId),
+    [firestore, jurisdictionId]
+  );
   const { data: jurisdiction, isLoading } = useDoc<Jurisdiction>(jurisdictionRef);
 
   return (
