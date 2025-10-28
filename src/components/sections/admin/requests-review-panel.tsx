@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { collection, query, where, doc, runTransaction, updateDoc } from 'firebase/firestore';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -105,15 +105,18 @@ function ApproveDialog({ request, onAction, isLoading }: ApproveDialogProps) {
 export default function RequestsReviewPanel() {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const { user } = useUser();
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
   const requestsQuery = useMemoFirebase(
     () =>
-      query(
-        collection(firestore, 'requests'),
-        where('status', '==', 'PENDING')
-      ),
-    [firestore]
+      user && !user.isAnonymous
+        ? query(
+            collection(firestore, 'requests'),
+            where('status', '==', 'PENDING')
+          )
+        : null,
+    [firestore, user]
   );
 
   const { data: requests, isLoading, error } = useCollection<JurisdictionRequest>(requestsQuery);
