@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -74,6 +75,10 @@ export default function UploadDocumentForm() {
 
   const form = useForm<UploadFormValues>({
     resolver: zodResolver(uploadSchema),
+    defaultValues: {
+      title: '',
+      tags: '',
+    },
   });
 
   const fileRef = form.register('file');
