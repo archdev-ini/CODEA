@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { collection, query, where, doc, updateDoc } from 'firebase/firestore';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -30,15 +30,18 @@ type CommunityInsight = {
 export default function InsightsReviewPanel() {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const { user } = useUser();
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
   const insightsQuery = useMemoFirebase(
     () =>
-      query(
-        collection(firestore, 'insights'),
-        where('status', '==', 'PENDING')
-      ),
-    [firestore]
+      user && !user.isAnonymous
+        ? query(
+            collection(firestore, 'insights'),
+            where('status', '==', 'PENDING')
+          )
+        : null,
+    [firestore, user]
   );
 
   const { data: insights, isLoading, error } = useCollection<CommunityInsight>(insightsQuery);
