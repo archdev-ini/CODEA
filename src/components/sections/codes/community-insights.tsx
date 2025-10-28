@@ -2,7 +2,7 @@
 'use client';
 
 import { collection, query, where } from 'firebase/firestore';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Plus, Terminal } from 'lucide-react';
@@ -26,15 +26,18 @@ export default function CommunityInsights({
   jurisdictionId,
 }: CommunityInsightsProps) {
   const firestore = useFirestore();
+  const { user } = useUser(); // Get user to ensure auth state is resolved
 
   const insightsQuery = useMemoFirebase(
     () =>
-      query(
-        collection(firestore, 'insights'),
-        where('jurisdictionId', '==', jurisdictionId),
-        where('status', '==', 'APPROVED')
-      ),
-    [firestore, jurisdictionId]
+      user // Only run the query if user state is resolved (even if anonymous)
+        ? query(
+            collection(firestore, 'insights'),
+            where('jurisdictionId', '==', jurisdictionId),
+            where('status', '==', 'APPROVED')
+          )
+        : null,
+    [firestore, jurisdictionId, user]
   );
 
   const {
