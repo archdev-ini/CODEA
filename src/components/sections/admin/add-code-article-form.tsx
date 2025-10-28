@@ -31,7 +31,7 @@ import {
 } from '@/components/ui/form';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection, query, runTransaction, doc, addDoc } from 'firebase/firestore';
 
 const articleSchema = z.object({
@@ -54,10 +54,14 @@ export default function AddCodeArticleForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const firestore = useFirestore();
+  const { user } = useUser();
 
   const jurisdictionsQuery = useMemoFirebase(
-    () => query(collection(firestore, 'jurisdictions')),
-    [firestore]
+    () =>
+      user && !user.isAnonymous
+        ? query(collection(firestore, 'jurisdictions'))
+        : null,
+    [firestore, user]
   );
   const { data: jurisdictions } = useCollection<Jurisdiction>(jurisdictionsQuery);
 
