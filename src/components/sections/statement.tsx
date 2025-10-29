@@ -14,10 +14,11 @@ export default function Statement() {
             </ScrollFloat>
           </h2>
           <p className="text-lg text-muted-foreground">
-            From Lagos to Nairobi, Accra to Addis, architects face shared
-            challenges shaped by climate, culture, and regulation. CODEA
-            gathers these layers into one clear source: codes, precedents, and
-            insights. Not to replace judgment — but to empower it.
+            Across cities and climates — from Lagos to Nairobi, Accra to Addis —
+            architects navigate the same intersection of culture, climate, and
+            regulation. CODEA unites these dimensions into a single intelligent
+            platform, turning fragmented knowledge into clarity. Not to replace
+            human judgment, but to strengthen it.
           </p>
         </div>
       </div>
