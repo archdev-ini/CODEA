@@ -31,7 +31,7 @@ const capabilities = [
 
 export default function AidaSection() {
   return (
-    <section className="py-20 md:py-28 bg-background">
+    <section className="py-20 md:py-28 bg-card border-y">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-12 items-start">
           <div className="md:col-span-1 sticky top-24">
@@ -45,6 +45,9 @@ export default function AidaSection() {
               AIDA (Architectural Intelligence Data Agent) is the heart of the
               CODEA ecosystem — an AI designed to understand, interpret, and
               generate architectural intelligence across contexts.
+            </p>
+            <p className="text-muted-foreground mt-2 font-medium">
+              Born in Africa. Built for the world.
             </p>
           </div>
           <div className="md:col-span-2 space-y-8">
@@ -68,8 +71,9 @@ export default function AidaSection() {
             <Separator />
             <div className="space-y-4">
               <p className="text-lg italic text-foreground">
-                AIDA represents a leap forward — from searching for information
-                to thinking with information.
+                AIDA represents a leap forward — from{' '}
+                <span className="font-medium">searching for information</span>{' '}
+                to <span className="font-medium">thinking with information.</span>
               </p>
             </div>
           </div>

@@ -13,15 +13,18 @@ export default function WhyCodeaExists() {
           <div className="md:col-span-2 space-y-8">
             <div className="space-y-4">
               <h3 className="text-xl font-medium text-foreground">
-                The absence of structure creates design fragmentation.
+                The absence of structure creates fragmentation.
               </h3>
               <p className="text-lg text-muted-foreground">
                 Across Africa, the practice of architecture is strong — but the
                 systems supporting it are scattered. Building codes differ by
                 region, climate data is inconsistently applied, and cultural
-                precedents remain undocumented. CODEA bridges these gaps through a
-                single intelligence interface: a digital framework where
-                regulations, materials, and ideas coexist.
+                precedents remain undocumented.
+              </p>
+              <p className="text-lg text-foreground font-medium">
+                CODEA bridges these gaps through a single intelligence
+                interface — a digital framework where regulations, materials,
+                and ideas coexist.
               </p>
             </div>
             <Separator />
@@ -31,8 +34,10 @@ export default function WhyCodeaExists() {
               </h3>
               <p className="text-lg text-muted-foreground">
                 Each dataset, precedent, and cultural record is translated into
-                usable insight. Because data is not knowledge — interpretation
-                is.
+                usable insight. Because data is not knowledge —{' '}
+                <span className="font-semibold text-foreground">
+                  interpretation is.
+                </span>
               </p>
             </div>
           </div>

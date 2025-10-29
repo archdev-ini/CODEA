@@ -7,9 +7,6 @@ export default function MissionStatement() {
     <section className="py-20 md:py-32 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-sm uppercase tracking-widest text-muted-foreground mb-4">
-            Our Mission
-          </p>
           <h1 className="text-4xl md:text-5xl font-medium text-primary tracking-tight leading-tight mb-6">
             A system for architectural clarity in Africa.
           </h1>
@@ -17,7 +14,7 @@ export default function MissionStatement() {
             CODEA exists to unify, interpret, and amplify the knowledge that
             drives architecture across the African continent. From national
             codes to vernacular principles, it creates a structured, searchable
-            layer of intelligence — so architects can design with precision,
+            layer of intelligence — enabling architects to design with precision,
             relevance, and responsibility.
           </p>
           <div className="mb-12">
