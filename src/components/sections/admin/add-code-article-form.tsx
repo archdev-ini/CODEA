@@ -39,7 +39,7 @@ const articleSchema = z.object({
   jurisdictionId: z.string().min(1, 'Jurisdiction is required'),
   codeId: z.string().min(3, 'Code ID must be at least 3 characters'),
   codeName: z.string().min(3, 'Code Name must be at least 3 characters'),
-  version: z.string().min(4, 'Version/Year is required'),
+  version: z.string().min(1, 'Version/Year is required'),
   title: z.string().min(5, 'Title must be at least 5 characters'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
 });

@@ -37,12 +37,9 @@ import { collection, addDoc } from 'firebase/firestore';
 const jurisdictionSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   level: z.enum([
-    'CONTINENTAL',
-    'REGIONAL',
     'NATIONAL',
     'STATE_PROVINCIAL',
     'CITY_MUNICIPAL',
-    'INDIGENOUS',
   ]),
 });
 
@@ -134,7 +131,7 @@ export default function AddJurisdictionForm() {
                     <SelectContent>
                       {Object.values(jurisdictionSchema.shape.level.options).map((level) => (
                           <SelectItem key={level} value={level}>
-                            {level}
+                            {level.replace('_', ' ')}
                           </SelectItem>
                         )
                       )}
