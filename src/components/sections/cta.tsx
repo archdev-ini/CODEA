@@ -11,8 +11,8 @@ export default function CTA() {
         </h2>
         <p className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8">
           Begin with the codes, precedents, and principles that matter. CODEA is
-          where research meets design intent — a starting point for every
-          contextual project.
+          where research meets design intent — the starting point for every
+          contextual and climate-responsive project.
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button size="lg" asChild>

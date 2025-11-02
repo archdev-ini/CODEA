@@ -16,7 +16,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-sm text-muted-foreground max-w-sm">
-              © {currentYear} CODEA Foundation — Pan-African Architectural
+              © 2025 CODEA Foundation — Pan-African Architectural
               Intelligence.
             </p>
             <p className="text-xs text-muted-foreground/70 mt-2">

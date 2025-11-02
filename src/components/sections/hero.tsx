@@ -20,8 +20,8 @@ export default function Hero() {
           </GradientText>
         </h1>
         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
-          A unified platform for building codes, design precedents, and cultural
-          intelligence — where every architectural project begins.
+          A unified platform of codes, precedents, and cultural intelligence —
+          where every architectural project begins with context.
         </p>
         <div className="flex flex-col items-center gap-8">
           <Countdown date={launchDate} />
