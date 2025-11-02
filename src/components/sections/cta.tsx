@@ -16,7 +16,7 @@ export default function CTA() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button size="lg" asChild>
-            <Link href="/codes">
+            <Link href="/atlas">
               Explore the Code Library <ArrowRight className="ml-2" />
             </Link>
           </Button>

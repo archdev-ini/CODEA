@@ -70,7 +70,7 @@ export default function CountryIndex() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {countries.map((country) => (
-          <Link href={`/codes/${country.id}`} key={country.id}>
+          <Link href={`/atlas/${country.id}`} key={country.id}>
             <SpotlightCard className="h-full text-center hover:shadow-lg transition-shadow cursor-pointer">
               <h3 className="font-semibold text-lg text-foreground">
                 {country.name}

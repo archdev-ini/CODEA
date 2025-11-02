@@ -13,7 +13,7 @@ export default function FooterCta() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button size="lg" asChild>
-            <Link href="/codes">Go to Code Library</Link>
+            <Link href="/atlas">Go to Code Library</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
             <Link href="#" target="_blank" rel="noopener noreferrer">

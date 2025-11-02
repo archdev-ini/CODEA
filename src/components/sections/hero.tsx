@@ -29,7 +29,7 @@ export default function Hero() {
             Launching February 2026
           </p>
           <Button size="lg" variant="outline" asChild>
-            <Link href="/codes">Explore the Platform</Link>
+            <Link href="/atlas">Explore the Platform</Link>
           </Button>
         </div>
       </div>
