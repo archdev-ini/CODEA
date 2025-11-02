@@ -26,6 +26,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useRouter, usePathname } from 'next/navigation';
 
+const navLinks = [
+  { href: '/about', label: 'About' },
+  { href: '/atlas', label: 'Atlas' },
+  { href: '/lexicon', label: 'Lexicon' },
+  { href: '/archive', label: 'Archive' },
+  { href: '/research-network', label: 'Research Network' },
+  { href: '/contact', label: 'Contact' },
+];
+
 export default function Header() {
   const isMobile = useIsMobile();
   const { user, isUserLoading } = useUser();
@@ -111,28 +120,24 @@ export default function Header() {
                   <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 p-4">
-                  <SheetClose asChild>
-                    <Link href="/about" className="text-lg">
-                      About
-                    </Link>
-                  </SheetClose>
-                  <SheetClose asChild>
-                    <Link href="/codes" className="text-lg">
-                      Codes
-                    </Link>
-                  </SheetClose>
+                  {navLinks.map((link) => (
+                    <SheetClose asChild key={link.href}>
+                      <Link href={link.href} className="text-lg">
+                        {link.label}
+                      </Link>
+                    </SheetClose>
+                  ))}
                 </div>
               </SheetContent>
             </Sheet>
           </div>
         ) : (
           <nav className="flex items-center gap-4">
-            <Button variant="link" asChild>
-              <Link href="/about">About</Link>
-            </Button>
-            <Button variant="link" asChild>
-              <Link href="/codes">Codes</Link>
-            </Button>
+            {navLinks.map((link) => (
+              <Button variant="link" asChild key={link.href}>
+                <Link href={link.href}>{link.label}</Link>
+              </Button>
+            ))}
             {isAdminPage && renderUserMenu()}
           </nav>
         )}

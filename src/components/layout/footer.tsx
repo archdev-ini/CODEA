@@ -16,7 +16,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-sm text-muted-foreground max-w-sm">
-              © 2025 CODEA Foundation — Pan-African Architectural
+              © {currentYear} CODEA Foundation — Pan-African Architectural
               Intelligence.
             </p>
             <p className="text-xs text-muted-foreground/70 mt-2">
@@ -32,19 +32,43 @@ export default function Footer() {
               About CODEA
             </Link>
             <Link
-              href="/codes"
+              href="/atlas"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Code Library
+              Atlas
+            </Link>
+            <Link
+              href="/lexicon"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Lexicon
+            </Link>
+             <Link
+              href="/archive"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Archive
+            </Link>
+             <Link
+              href="/research-network"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Research Network
             </Link>
           </nav>
           <nav className="flex flex-col gap-3 text-sm">
             <h3 className="font-semibold text-foreground mb-2">Support</h3>
             <Link
-              href="/about"
+              href="/contact"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Contact
+            </Link>
+             <Link
+              href="/support"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Support / FAQs
             </Link>
           </nav>
         </div>
