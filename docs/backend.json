@@ -291,36 +291,100 @@
       "required": ["slug", "title", "location", "typology", "summary"]
     },
     "LexiconTerm": {
-      "$schema.json": "http://json-schema.org/draft-07/schema#",
+      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Lexicon Term",
       "type": "object",
-      "description": "A single term in the multilingual glossary.",
+      "description": "A single term in the multilingual glossary, representing cultural, environmental, or spatial concepts.",
       "properties": {
+        "slug": {
+          "type": "string",
+          "description": "Unique slug for the term, e.g., compound_house."
+        },
         "term": {
           "type": "string",
-          "description": "The primary term or keyword."
+          "description": "The canonical English label for the term."
+        },
+        "local_variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "language_code": { "type": "string" },
+              "term": { "type": "string" },
+              "script": { "type": "string" },
+              "pronunciation_audio_ref": { "type": "string" }
+            }
+          },
+          "description": "Linguistic variations of the term in different local languages."
         },
         "definition": {
           "type": "string",
-          "description": "The definition of the term."
+          "description": "A concise, contextual definition of the term (100–300 words)."
+        },
+        "context": {
+          "type": "string",
+          "description": "Additional cultural notes or historical roots of the term."
+        },
+        "media": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "References to images, audio, or diagrams illustrating the term."
+        },
+        "related_terms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slugs of other related terms in the Lexicon."
+        },
+        "related_precedents": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slugs of related precedents in the Archive."
+        },
+        "related_codes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slugs of related articles in the Atlas."
         },
         "category": {
           "type": "string",
-          "enum": ["Cultural", "Environmental", "Spatial", "Material"],
+          "enum": ["cultural", "environmental", "material", "spatial"],
           "description": "The primary category of the term."
         },
-        "relatedTerms": {
+        "region_variations": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "IDs of related terms in the Lexicon."
+          "items": {
+            "type": "object",
+            "properties": {
+              "region": { "type": "string" },
+              "variant_description": { "type": "string" },
+              "examples": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "description": "Descriptions of how the term manifests differently across geographic regions."
         },
-        "relatedCodes": {
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "created_by": { "type": "string" },
+            "created_at": { "type": "string", "format": "date-time" },
+            "verified_by": { "type": "string" },
+            "verified_at": { "type": "string", "format": "date-time" },
+            "verification_status": {
+              "type": "string",
+              "enum": ["draft", "submitted", "verified", "rejected"]
+            }
+          }
+        },
+        "language_tags": {
           "type": "array",
           "items": { "type": "string" },
-          "description": "IDs of related articles in the Atlas."
+          "description": "ISO language codes relevant to this term, e.g., 'yo', 'en', 'sw'."
         }
       },
-      "required": ["term", "definition", "category"]
+      "required": ["slug", "term", "definition", "category"]
     }
   },
   "auth": {
