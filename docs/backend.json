@@ -60,7 +60,19 @@
         },
         "category": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string",
+            "enum": [
+              "structural",
+              "fire",
+              "accessibility",
+              "electrical",
+              "plumbing",
+              "energy",
+              "ventilation",
+              "zoning"
+            ]
+          },
           "description": "Array of categories like 'structural', 'fire', 'accessibility'."
         },
         "summary": {
@@ -111,7 +123,17 @@
         },
         "climate_zones": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string",
+            "enum": [
+              "tropical_wet",
+              "tropical_wet_dry",
+              "dry_semiarid",
+              "dry_arid",
+              "temperate",
+              "highland"
+            ]
+          },
           "description": "Applicable climate zones, e.g., 'tropical_wet'."
         },
         "metadata": {
@@ -204,17 +226,52 @@
         },
         "typology": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string",
+            "enum": [
+              "residential",
+              "public",
+              "educational",
+              "commercial",
+              "religious",
+              "infrastructure",
+              "landscape",
+              "mixed_use"
+            ]
+          },
           "description": "Controlled vocabulary for precedent type, e.g., 'residential', 'courtyard_house'."
         },
         "materials": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string",
+            "enum": [
+              "timber",
+              "bamboo",
+              "laterite",
+              "stone",
+              "adobe",
+              "clay_brick",
+              "reinforced_concrete",
+              "steel",
+              "thatch"
+            ]
+          },
           "description": "Controlled vocabulary for primary materials, e.g., 'laterite', 'timber'."
         },
         "climate_zones": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string",
+            "enum": [
+              "tropical_wet",
+              "tropical_wet_dry",
+              "dry_semiarid",
+              "dry_arid",
+              "temperate",
+              "highland"
+            ]
+          },
           "description": "Applicable climate zones."
         },
         "summary": {
