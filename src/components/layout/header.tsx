@@ -32,6 +32,7 @@ const navLinks = [
   { href: '/lexicon', label: 'Lexicon' },
   { href: '/archive', label: 'Archive' },
   { href: '/research-network', label: 'Research Network' },
+  { href: '/community', label: 'Community' },
   { href: '/contact', label: 'Contact' },
 ];
 

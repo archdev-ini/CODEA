@@ -4,7 +4,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Public collections
+    // Public collections are readable by anyone, but writable only by authenticated users.
     match /documents/{document=**} {
       allow read: if true;
       allow write: if request.auth != null;
@@ -20,7 +20,8 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
-    // Community content - requires auth
+    // Community content requires authentication to read and write.
+    // This protects user-submitted data while allowing community interaction.
     match /insights/{insight} {
       allow read, write: if request.auth != null;
     }
