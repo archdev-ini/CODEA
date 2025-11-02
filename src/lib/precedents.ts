@@ -1,3 +1,4 @@
+
 import data from './precedents.json';
 
 export type Precedent = {
