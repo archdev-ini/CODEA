@@ -4,30 +4,47 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Public collections are readable by anyone, but writable only by authenticated users.
-    match /documents/{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+    // Default deny all reads and writes
+    match /{document=**} {
+      allow read, write: if false;
     }
 
-    match /jurisdictions/{jurisdiction} {
+    // Precedents are public
+    match /precedents/{precedentId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null; // Or more specific admin rules
     }
     
-    match /articles/{article} {
+    // Jurisdictions are publicly readable, but only writable by authenticated users (admins)
+    match /jurisdictions/{jurisdictionId} {
       allow read: if true;
       allow write: if request.auth != null;
     }
 
-    // Community content requires authentication to read and write.
-    // This protects user-submitted data while allowing community interaction.
-    match /insights/{insight} {
+    // Articles are publicly readable, but only writable by authenticated users (admins)
+    match /articles/{articleId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Documents are publicly readable, but only writable by authenticated users (admins)
+    match /documents/{documentId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Community submissions (insights, requests) are readable and writable by any authenticated user.
+    // You might want to lock this down further so users can only edit their own.
+    match /insights/{insightId} {
+      allow read, write: if request.auth != null;
+    }
+    match /requests/{requestId} {
       allow read, write: if request.auth != null;
     }
 
-    match /requests/{request} {
-      allow read, write: if request.auth != null;
+    // User-specific data
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth.uid == userId;
     }
   }
 }
