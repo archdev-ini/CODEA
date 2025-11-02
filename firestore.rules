@@ -9,10 +9,29 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Precedents are public
-    match /precedents/{precedentId} {
+    // Atlas, Archive, and Lexicon are publicly readable.
+    // Writes are restricted to authenticated users (admins/contributors).
+    match /atlas/{articleId} {
       allow read: if true;
-      allow write: if request.auth != null; // Or more specific admin rules
+      allow write: if request.auth != null;
+    }
+
+    match /archive/{precedentId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    match /lexicon/{termId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Community submissions (insights, requests) are readable and writable by any authenticated user.
+    match /insights/{insightId} {
+      allow read, write: if request.auth != null;
+    }
+    match /requests/{requestId} {
+      allow read, write: if request.auth != null;
     }
     
     // Jurisdictions are publicly readable, but only writable by authenticated users (admins)
@@ -33,16 +52,13 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
-    // Community submissions (insights, requests) are readable and writable by any authenticated user.
-    // You might want to lock this down further so users can only edit their own.
-    match /insights/{insightId} {
-      allow read, write: if request.auth != null;
+    // User profiles can be read by anyone, but only written to by the owner.
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth.uid == userId;
     }
-    match /requests/{requestId} {
-      allow read, write: if request.auth != null;
-    }
-
-    // User-specific data
+    
+    // User-specific private data
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth.uid == userId;
     }
