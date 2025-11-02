@@ -36,27 +36,129 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Code Article",
       "type": "object",
-      "description": "A single record from a building code or regulation.",
+      "description": "A single record from a building code or regulation, part of the Atlas collection.",
       "properties": {
-        "jurisdiction": {
+        "slug": {
           "type": "string",
-          "description": "ID of the country/region this article belongs to."
+          "description": "Unique slug for the document, e.g., ng_building_code_2024."
         },
         "title": {
           "type": "string",
-          "description": "Title of the code article."
+          "description": "Human-readable title of the code or regulation."
         },
-        "description": {
+        "country": {
           "type": "string",
-          "description": "Detailed text of the regulation."
+          "description": "Controlled ISO code for the country."
+        },
+        "region": {
+          "type": "string",
+          "description": "Subnational region, e.g., Lagos State."
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Level of government: national, state, or municipal."
+        },
+        "category": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of categories like 'structural', 'fire', 'accessibility'."
+        },
+        "summary": {
+          "type": "string",
+          "description": "A 200–400 character summary of the document."
+        },
+        "full_text_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Canonical source link (PDF or government website)."
+        },
+        "file_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "storage_path": { "type": "string" },
+              "caption": { "type": "string" }
+            }
+          },
+          "description": "References to stored files, like PDFs."
+        },
+        "effective_date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the code becomes effective."
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the code was last updated."
+        },
+        "related_terms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slugs of related terms in the Lexicon."
+        },
+        "related_precedents": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Document IDs of related precedents in the Archive."
         },
         "tags": {
           "type": "array",
           "items": { "type": "string" },
-          "description": "Keywords for filtering (e.g., 'fire-safety', 'ventilation')."
+          "description": "General tags for filtering."
+        },
+        "climate_zones": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Applicable climate zones, e.g., 'tropical_wet'."
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "source_organization": { "type": "string" },
+            "source_contact": { "type": "string" },
+            "license": {
+              "type": "string",
+              "enum": ["public_domain", "cc_by_4.0", "proprietary_contact"]
+            }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "created_by": { "type": "string" },
+            "created_at": { "type": "string", "format": "date-time" },
+            "verified_by": { "type": "string" },
+            "verified_at": { "type": "string", "format": "date-time" },
+            "verification_status": {
+              "type": "string",
+              "enum": ["draft", "submitted", "verified", "rejected"]
+            }
+          }
+        },
+        "search_terms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Precomputed synonyms for search ranking."
+        },
+        "geo": {
+          "type": "object",
+          "properties": {
+            "type": { "enum": ["Polygon", "Point"] },
+            "coordinates": { "type": "array" }
+          },
+          "description": "GeoJSON object for localized bylaws."
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Internal trust or completeness score (0-100)."
         }
       },
-      "required": ["jurisdiction", "title", "description"]
+      "required": ["slug", "title", "country", "category", "summary"]
     },
     "Precedent": {
       "$schema": "http://json-schema.org/draft-07/schema#",
