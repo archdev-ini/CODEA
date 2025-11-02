@@ -164,63 +164,131 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Precedent",
       "type": "object",
-      "description": "Represents an architectural precedent stored in the CODEA library.",
+      "description": "Represents an architectural precedent stored in the CODEA library's archive.",
       "properties": {
-        "id": {
+        "slug": {
           "type": "string",
-          "description": "Unique identifier for the precedent."
+          "description": "Unique slug for the precedent, e.g., yoruba_courtyard_house_1978."
         },
         "title": {
           "type": "string",
           "description": "The title of the architectural precedent."
         },
-        "description": {
-          "type": "string",
-          "description": "A detailed description of the architectural precedent."
-        },
-        "architect": {
-          "type": "string",
-          "description": "The architect or firm responsible for the precedent."
-        },
         "location": {
-          "type": "string",
-          "description": "The location of the architectural precedent."
+          "type": "object",
+          "properties": {
+            "country_iso": { "type": "string" },
+            "region": { "type": "string" },
+            "city": { "type": "string" },
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          },
+          "required": ["country_iso"],
+          "description": "Geographic location of the precedent."
         },
-        "year": {
+        "year_completed": {
           "type": "number",
-          "description": "The year the architectural precedent was completed."
+          "description": "The year the precedent was completed."
         },
-        "imageUrl": {
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "affiliation": { "type": "string" },
+              "contact": { "type": "string" }
+            }
+          },
+          "description": "Architects, designers, or firms responsible for the work."
+        },
+        "typology": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Controlled vocabulary for precedent type, e.g., 'residential', 'courtyard_house'."
+        },
+        "materials": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Controlled vocabulary for primary materials, e.g., 'laterite', 'timber'."
+        },
+        "climate_zones": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Applicable climate zones."
+        },
+        "summary": {
           "type": "string",
-          "description": "URL of an image representing the precedent.",
-          "format": "uri"
+          "description": "A detailed summary of the precedent."
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "storage_path": { "type": "string" },
+              "caption": { "type": "string" },
+              "credit": { "type": "string" }
+            }
+          },
+          "description": "References to images in cloud storage."
+        },
+        "plans": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "storage_path": { "type": "string" },
+              "type": { "enum": ["plan", "section", "elevation"] },
+              "caption": { "type": "string" }
+            }
+          },
+          "description": "References to architectural drawings."
+        },
+        "related_codes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slugs of related articles in the Atlas."
+        },
+        "related_terms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slugs of related terms in the Lexicon."
         },
         "tags": {
           "type": "array",
-          "description": "Tags associated with the architectural precedent.",
-          "items": {
-            "type": "string"
+          "items": { "type": "string" },
+          "description": "General tags for filtering."
+        },
+        "license": {
+          "type": "string",
+          "description": "Data license, e.g., 'cc_by_4.0'."
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "submitted_by": { "type": "string" },
+            "submitted_at": { "type": "string", "format": "date-time" },
+            "verified_by": { "type": "string" },
+            "verified_at": { "type": "string", "format": "date-time" },
+            "verification_status": {
+              "type": "string",
+              "enum": ["draft", "submitted", "verified", "rejected"]
+            }
           }
         },
-        "codeaCategories": {
+        "attachments": {
           "type": "array",
-          "description": "CODEA-specific categories assigned to the precedent to describe architechtural code.",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "object" },
+          "description": "References to other documents like field notes or interviews."
+        },
+        "access_level": {
+          "type": "string",
+          "enum": ["public", "restricted", "private"],
+          "description": "Controls visibility of the record."
         }
       },
-      "required": [
-        "id",
-        "title",
-        "description",
-        "architect",
-        "location",
-        "year",
-        "imageUrl",
-        "tags",
-        "codeaCategories"
-      ]
+      "required": ["slug", "title", "location", "typology", "summary"]
     },
     "LexiconTerm": {
       "$schema.json": "http://json-schema.org/draft-07/schema#",
