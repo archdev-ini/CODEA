@@ -68,9 +68,11 @@ export default async function PrecedentDetailPage({ params }: PrecedentDetailPag
                   <h3 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-2">Tags</h3>
                   <div className="flex flex-wrap gap-2">
                     {precedent.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
+                      <Link href={`/archive?tag=${encodeURIComponent(tag)}`} key={tag}>
+                        <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
+                          {tag}
+                        </Badge>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -78,9 +80,11 @@ export default async function PrecedentDetailPage({ params }: PrecedentDetailPag
                   <h3 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-2">CODEA Categories</h3>
                   <div className="flex flex-wrap gap-2">
                     {precedent.codeaCategories.map((category) => (
-                      <Badge key={category} variant="outline">
-                        {category}
-                      </Badge>
+                       <Link href={`/lexicon?category=${encodeURIComponent(category)}`} key={category}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-accent">
+                          {category}
+                        </Badge>
+                      </Link>
                     ))}
                   </div>
                 </div>
