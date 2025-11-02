@@ -317,6 +317,13 @@
           "items": { "type": "string" },
           "description": "General tags for filtering."
         },
+        "search_terms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Precomputed synonyms for search ranking."
+        },
         "license": {
           "type": "string",
           "description": "Data license, e.g., 'cc_by_4.0'."
@@ -434,6 +441,13 @@
               "enum": ["draft", "submitted", "verified", "rejected"]
             }
           }
+        },
+        "search_terms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Precomputed synonyms for search ranking."
         },
         "language_tags": {
           "type": "array",
