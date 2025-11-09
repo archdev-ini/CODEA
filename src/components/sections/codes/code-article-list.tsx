@@ -1,25 +1,14 @@
 'use client';
 
-import { collection, query, where } from 'firebase/firestore';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
-
-type CodeArticle = {
-  id: string;
-  title: string;
-  description: string;
-  codeName: string;
-  version: string;
-  requirements: string[];
-};
+import { codeLibraries } from '@/lib/codes';
 
 type CodeArticleListProps = {
   jurisdictionId: string;
@@ -28,48 +17,22 @@ type CodeArticleListProps = {
 export default function CodeArticleList({
   jurisdictionId,
 }: CodeArticleListProps) {
-  const firestore = useFirestore();
-
-  const articlesQuery = useMemoFirebase(
-    () =>
-      query(
-        collection(firestore, 'articles'),
-        where('jurisdictionId', '==', jurisdictionId)
-      ),
-    [firestore, jurisdictionId]
-  );
-
-  const {
-    data: articles,
-    isLoading,
-    error,
-  } = useCollection<CodeArticle>(articlesQuery);
+  const library = codeLibraries[jurisdictionId.toLowerCase()];
 
   const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="space-y-4">
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-        </div>
-      );
-    }
-
-    if (error) {
+    if (!library) {
       return (
         <Alert variant="destructive">
           <Terminal className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
-            Failed to load code articles. Please ensure you have the correct
-            permissions.
+            Could not find code library for: {jurisdictionId}
           </AlertDescription>
         </Alert>
       );
     }
 
-    if (!articles || articles.length === 0) {
+    if (library.sections.length === 0) {
       return (
         <div className="text-center py-12 text-muted-foreground">
           <p>No code articles have been indexed for this jurisdiction yet.</p>
@@ -79,31 +42,31 @@ export default function CodeArticleList({
 
     return (
       <Accordion type="single" collapsible className="w-full">
-        {articles.map((article) => (
-          <AccordionItem key={article.id} value={article.id}>
-            <AccordionTrigger className="text-left">
-              {article.title}
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <p className="text-muted-foreground">{article.description}</p>
-              {article.requirements && article.requirements.length > 0 && (
-                <div>
-                  <h4 className="font-semibold mb-2">Key Requirements:</h4>
-                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                    {article.requirements.map((req, index) => (
-                      <li key={index}>{req}</li>
-                    ))}
-                  </ul>
+        {library.sections.flatMap((section) =>
+          section.articles.map((article) => (
+            <AccordionItem key={article.code_id} value={article.code_id}>
+              <AccordionTrigger className="text-left">
+                {article.title}
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4">
+                <p className="text-muted-foreground">{article.description}</p>
+                {article.requirements && article.requirements.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-2">Key Requirements:</h4>
+                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                      {article.requirements.map((req, index) => (
+                        <li key={index}>{req}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <div className="text-xs text-muted-foreground/80 pt-4">
+                  <p>Source: {article.references.join(', ')}</p>
                 </div>
-              )}
-              <div className="text-xs text-muted-foreground/80 pt-4">
-                <p>
-                  Source: {article.codeName} ({article.version})
-                </p>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))
+        )}
       </Accordion>
     );
   };

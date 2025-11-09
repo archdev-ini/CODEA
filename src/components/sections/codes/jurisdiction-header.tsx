@@ -1,14 +1,7 @@
 'use client';
 
-import { doc } from 'firebase/firestore';
-import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
-
-type Jurisdiction = {
-  id: string;
-  name: string;
-  level: string;
-};
+import { availableCountries } from '@/lib/countries';
 
 type JurisdictionHeaderProps = {
   jurisdictionId: string;
@@ -17,36 +10,19 @@ type JurisdictionHeaderProps = {
 export default function JurisdictionHeader({
   jurisdictionId,
 }: JurisdictionHeaderProps) {
-  const firestore = useFirestore();
-  const jurisdictionRef = useMemoFirebase(
-    () => doc(firestore, 'jurisdictions', jurisdictionId),
-    [firestore, jurisdictionId]
-  );
-  const { data: jurisdiction, isLoading } = useDoc<Jurisdiction>(jurisdictionRef);
+  const country = availableCountries().find(c => c.value === jurisdictionId);
+  const jurisdictionName = country ? country.label : 'Unknown Jurisdiction';
 
   return (
     <section className="py-20 md:py-32 bg-card border-b">
       <div className="container mx-auto px-4 text-center">
-        {isLoading ? (
-          <>
-            <Skeleton className="h-10 w-3/4 mx-auto mb-4" />
-            <Skeleton className="h-6 w-1/2 mx-auto" />
-          </>
-        ) : jurisdiction ? (
-          <>
-            <h1 className="text-3xl md:text-4xl font-medium text-primary mb-4">
-              {jurisdiction.name} Building Codes
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Explore the standards and regulations governing architecture and
-              construction in {jurisdiction.name}.
-            </p>
-          </>
-        ) : (
-          <h1 className="text-3xl md:text-4xl font-medium text-destructive mb-4">
-            Jurisdiction not found.
-          </h1>
-        )}
+        <h1 className="text-3xl md:text-4xl font-medium text-primary mb-4">
+          {jurisdictionName} Building Codes
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+          Explore the standards and regulations governing architecture and
+          construction in {jurisdictionName}.
+        </p>
       </div>
     </section>
   );
