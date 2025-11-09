@@ -1,112 +1,48 @@
+import { Library, Users } from 'lucide-react';
+import Link from 'next/link';
 
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
-import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Building,
-  ShieldCheck,
-  PersonStanding,
-  Leaf,
-  GalleryVertical,
-  Construction,
-  DoorOpen,
-} from 'lucide-react';
-import SpotlightCard from '@/components/ui/SpotlightCard';
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
 
-const categories = [
-  {
-    value: 'structural',
-    label: 'Structural Codes',
-    icon: <Building className="h-5 w-5 mr-2" />,
-    summaries: [
-      { title: 'Foundations', icon: <Construction /> },
-      { title: 'Wall Systems', icon: <Construction /> },
-      { title: 'Roofing', icon: <DoorOpen /> },
-    ],
-  },
-  {
-    value: 'safety',
-    label: 'Fire & Safety',
-    icon: <ShieldCheck className="h-5 w-5 mr-2" />,
-    summaries: [
-        { title: 'Egress', icon: <DoorOpen /> },
-        { title: 'Fire Rating', icon: <ShieldCheck /> },
-        { title: 'Alarms', icon: <Building /> },
-    ],
-  },
-  {
-    value: 'accessibility',
-    label: 'Accessibility',
-    icon: <PersonStanding className="h-5 w-5 mr-2" />,
-    summaries: [
-        { title: 'Ramps & Access', icon: <PersonStanding /> },
-        { title: 'Sanitary', icon: <Building /> },
-        { title: 'Signage', icon: <Construction /> },
-    ],
-  },
-  {
-    value: 'environmental',
-    label: 'Environmental',
-    icon: <Leaf className="h-5 w-5 mr-2" />,
-    summaries: [
-        { title: 'Ventilation', icon: <Building /> },
-        { title: 'Water Runoff', icon: <Leaf /> },
-        { title: 'Insulation', icon: <Construction /> },
-    ],
-  },
-  {
-    value: 'cultural',
-    label: 'Cultural Guidelines',
-    icon: <GalleryVertical className="h-5 w-5 mr-2" />,
-    summaries: [
-        { title: 'Vernacular Forms', icon: <GalleryVertical /> },
-        { title: 'Courtyards', icon: <Building /> },
-        { title: 'Public Space', icon: <PersonStanding /> },
-    ],
-  },
-];
-
-export default function CodeCategories() {
   return (
-    <section className="py-20 md:py-28 bg-background">
-      <div className="container mx-auto px-4">
-        <Tabs defaultValue="structural" className="w-full">
-          <div className="overflow-x-auto pb-2">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto min-w-[600px] md:min-w-full">
-              {categories.map((cat) => (
-                <TabsTrigger key={cat.value} value={cat.value} className='py-2 data-[state=active]:shadow-lg'>
-                  {cat.icon} {cat.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+    <footer className="bg-card border-t border-border">
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Library className="h-6 w-6 text-muted-foreground" />
+              <span className="font-semibold text-foreground text-lg">
+                CODEA Foundation
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              © {currentYear} CODEA Foundation — Pan-African Architectural
+              Intelligence.
+            </p>
+            <p className="text-xs text-muted-foreground/70 mt-2">
+              Powered by Builder Africa.
+            </p>
           </div>
-          {categories.map((cat) => (
-            <TabsContent key={cat.value} value={cat.value}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                {cat.summaries.map((summary) => (
-                  <SpotlightCard key={summary.title}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        {summary.title}
-                      </CardTitle>
-                      <div className="text-muted-foreground">{summary.icon}</div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-xs text-muted-foreground">
-                        View standards for {summary.title.toLowerCase()}
-                      </p>
-                    </CardContent>
-                  </SpotlightCard>
-                ))}
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Sections</h3>
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              About
+            </Link>
+          </nav>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Support</h3>
+             <Link
+              href="/support"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Support / Contact
+            </Link>
+          </nav>
+        </div>
       </div>
-    </section>
+    </footer>
   );
 }

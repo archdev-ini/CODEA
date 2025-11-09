@@ -1,99 +1,48 @@
-
-import Header from '@/components/layout/header';
-import Footer from '@/components/layout/footer';
-import { getPrecedentById } from '@/lib/precedents';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { Library, Users } from 'lucide-react';
 import Link from 'next/link';
 
-type PrecedentDetailPageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function PrecedentDetailPage({ params }: PrecedentDetailPageProps) {
-  const precedent = await getPrecedentById(params.id);
-
-  if (!precedent) {
-    notFound();
-  }
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <Header />
-      <main className="flex-grow py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <Button variant="ghost" asChild>
-              <Link href="/archive">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Archive
-              </Link>
-            </Button>
-          </div>
-          <div className="grid md:grid-cols-5 gap-12">
-            <div className="md:col-span-3">
-              <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden shadow-lg">
-                <Image
-                  src={precedent.imageUrl}
-                  alt={precedent.title}
-                  fill
-                  className="object-cover"
-                  data-ai-hint={precedent.imageHint}
-                />
-              </div>
+    <footer className="bg-card border-t border-border">
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Library className="h-6 w-6 text-muted-foreground" />
+              <span className="font-semibold text-foreground text-lg">
+                CODEA Foundation
+              </span>
             </div>
-            <div className="md:col-span-2">
-              <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
-                {precedent.title}
-              </h1>
-              <p className="text-lg text-muted-foreground mb-4">
-                {precedent.architect}
-              </p>
-              <p className="text-sm text-muted-foreground font-semibold">
-                {precedent.location} &mdash; {precedent.year}
-              </p>
-              <div className="my-6 space-y-4">
-                <p className="text-base text-foreground leading-relaxed">
-                  {precedent.description}
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-2">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {precedent.tags.map((tag) => (
-                      <Link href={`/archive?tag=${encodeURIComponent(tag)}`} key={tag}>
-                        <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
-                          {tag}
-                        </Badge>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold uppercase text-muted-foreground tracking-wider mb-2">CODEA Categories</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {precedent.codeaCategories.map((category) => (
-                       <Link href={`/lexicon?category=${encodeURIComponent(category)}`} key={category}>
-                        <Badge variant="outline" className="cursor-pointer hover:bg-accent">
-                          {category}
-                        </Badge>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              © {currentYear} CODEA Foundation — Pan-African Architectural
+              Intelligence.
+            </p>
+            <p className="text-xs text-muted-foreground/70 mt-2">
+              Powered by Builder Africa.
+            </p>
           </div>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Sections</h3>
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              About
+            </Link>
+          </nav>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Support</h3>
+             <Link
+              href="/support"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Support / Contact
+            </Link>
+          </nav>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </footer>
   );
 }

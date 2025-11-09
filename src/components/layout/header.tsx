@@ -16,10 +16,6 @@ import { usePathname } from 'next/navigation';
 
 const navLinks = [
   { href: '/about', label: 'About' },
-  { href: '/atlas', label: 'Atlas' },
-  { href: '/lexicon', label: 'Lexicon' },
-  { href: '/archive', label: 'Archive' },
-  { href: '/research-network', label: 'Research Network' },
   { href: '/support', label: 'Support' },
 ];
 

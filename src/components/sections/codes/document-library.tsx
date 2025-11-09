@@ -1,28 +1,48 @@
+import { Library, Users } from 'lucide-react';
+import Link from 'next/link';
 
-import { BookText } from 'lucide-react';
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
 
-export default function DocumentLibrary() {
   return (
-    <section className="py-20 md:py-28 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 font-headline">
-            Document Library
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Browse source documents and AI-generated summaries.
-          </p>
-        </div>
-        <div className="text-center py-12 text-muted-foreground border border-dashed rounded-lg flex flex-col items-center">
-          <BookText className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium text-foreground mb-2">
-            The Document Library is Coming Soon
-          </h3>
-          <p>
-            This section has been reset and will be rebuilt.
-          </p>
+    <footer className="bg-card border-t border-border">
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Library className="h-6 w-6 text-muted-foreground" />
+              <span className="font-semibold text-foreground text-lg">
+                CODEA Foundation
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              © {currentYear} CODEA Foundation — Pan-African Architectural
+              Intelligence.
+            </p>
+            <p className="text-xs text-muted-foreground/70 mt-2">
+              Powered by Builder Africa.
+            </p>
+          </div>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Sections</h3>
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              About
+            </Link>
+          </nav>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Support</h3>
+             <Link
+              href="/support"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Support / Contact
+            </Link>
+          </nav>
         </div>
       </div>
-    </section>
+    </footer>
   );
 }

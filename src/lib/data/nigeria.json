@@ -1,50 +1,48 @@
+import { Library, Users } from 'lucide-react';
+import Link from 'next/link';
 
-{
-  "meta": {
-    "country": "Nigeria",
-    "region": "West Africa",
-    "version": "1.0",
-    "updated_at": "2025-10-10",
-    "source": "National Building Code (NBC 2006)",
-    "language": "English",
-    "tags": ["building", "zoning", "safety"]
-  },
-  "sections": [
-    {
-      "id": "general-requirements",
-      "title": "General Requirements",
-      "summary": "This section covers general provisions, definitions, and administrative requirements applicable to all building projects.",
-      "articles": [
-        {
-          "code_id": "NBC-GEN-1.1",
-          "title": "Application of Code",
-          "description": "This code shall apply to the design, construction, alteration, and demolition of all buildings and structures within the Federal Republic of Nigeria.",
-          "requirements": [
-            "All new construction must obtain a permit before commencement.",
-            "Alterations affecting structural stability require professional certification."
-          ],
-          "references": ["NBC 2006, Part 1, Section 1.1"],
-          "keywords": ["applicability", "scope", "permit"],
-          "notes": "Exemptions may apply for minor repairs and temporary structures as defined by local authorities."
-        },
-        {
-          "code_id": "NBC-GEN-1.2",
-          "title": "Habitable Room Minimum Height",
-          "description": "Specifies the minimum ceiling height for rooms intended for human habitation to ensure comfort and adequate air circulation.",
-          "requirements": [
-            "A minimum ceiling height of 2.7 meters is required for all habitable rooms.",
-            "For rooms with sloped ceilings, the average height must be at least 2.7 meters, with no portion less than 2.1 meters."
-          ],
-          "references": ["NBC 2006, Part 3, Section 5.2.1"],
-          "keywords": ["ceiling height", "habitable room", "headroom"],
-          "examples": [
-            {
-              "context": "Residential bedroom",
-              "application": "The floor-to-ceiling measurement must be no less than 2.7m."
-            }
-          ]
-        }
-      ]
-    }
-  ]
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-card border-t border-border">
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Library className="h-6 w-6 text-muted-foreground" />
+              <span className="font-semibold text-foreground text-lg">
+                CODEA Foundation
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              © {currentYear} CODEA Foundation — Pan-African Architectural
+              Intelligence.
+            </p>
+            <p className="text-xs text-muted-foreground/70 mt-2">
+              Powered by Builder Africa.
+            </p>
+          </div>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Sections</h3>
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              About
+            </Link>
+          </nav>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Support</h3>
+             <Link
+              href="/support"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Support / Contact
+            </Link>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  );
 }

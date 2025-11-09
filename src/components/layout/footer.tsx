@@ -31,30 +31,6 @@ export default function Footer() {
             >
               About
             </Link>
-            <Link
-              href="/atlas"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Atlas
-            </Link>
-            <Link
-              href="/lexicon"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Lexicon
-            </Link>
-             <Link
-              href="/archive"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Archive
-            </Link>
-             <Link
-              href="/research-network"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Research Network
-            </Link>
           </nav>
           <nav className="flex flex-col gap-3 text-sm">
             <h3 className="font-semibold text-foreground mb-2">Support</h3>

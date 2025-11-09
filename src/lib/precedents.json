@@ -1,53 +1,48 @@
+import { Library, Users } from 'lucide-react';
+import Link from 'next/link';
 
-{
-  "precedents": [
-    {
-      "id": "makoko-floating-school",
-      "title": "Makoko Floating School",
-      "description": "A prototype floating structure, built for the Makoko waterfront community in Lagos, Nigeria. The school was designed to address the community's social and physical needs in the context of climate change and rapid urbanization.",
-      "architect": "NLÉ Architects",
-      "location": "Lagos, Nigeria",
-      "year": 2013,
-      "imageUrl": "https://picsum.photos/seed/mfs/600/400",
-      "imageHint": "floating structure",
-      "tags": ["Floating Architecture", "Community", "Climate Adaptation"],
-      "codeaCategories": ["Adaptive Systems", "Community Infrastructure"]
-    },
-    {
-      "id": "lideta-mercato",
-      "title": "Lideta Mercato",
-      "description": "A shopping mall in Addis Ababa that uses a perforated concrete facade inspired by traditional Ethiopian fractal patterns. The facade provides passive ventilation and shading, reducing energy consumption.",
-      "architect": "Vilalta Arquitectura",
-      "location": "Addis Ababa, Ethiopia",
-      "year": 2011,
-      "imageUrl": "https://picsum.photos/seed/lideta/600/400",
-      "imageHint": "concrete facade",
-      "tags": ["Passive Design", "Bioclimatic", "Commercial"],
-      "codeaCategories": ["Building Envelope", "Cultural Patterns"]
-    },
-    {
-      "id": "red-location-museum",
-      "title": "Red Location Museum",
-      "description": "A museum in Port Elizabeth dedicated to the history of the anti-apartheid struggle. The design uses industrial materials like corrugated steel and exposed structure to evoke the memory of the surrounding informal settlement.",
-      "architect": "Noero Architects",
-      "location": "Port Elizabeth, South Africa",
-      "year": 2005,
-      "imageUrl": "https://picsum.photos/seed.js/rlm/600/400",
-      "imageHint": "industrial museum",
-      "tags": ["Memory", "Industrial Materials", "Cultural"],
-      "codeaCategories": ["Material Expression", "Public Space"]
-    },
-    {
-      "id": "burkina-faso-primary-school",
-      "title": "Primary School Gando",
-      "description": "A primary school in Burkina Faso built with locally sourced clay and traditional construction techniques, augmented with modern engineering. The design features a large, elevated roof that provides shade and promotes natural ventilation.",
-      "architect": "Diébédo Francis Kéré",
-      "location": "Gando, Burkina Faso",
-      "year": 2001,
-      "imageUrl": "https://picsum.photos/seed/gando/600/400",
-      "imageHint": "clay school",
-      "tags": ["Vernacular", "Community", "Education"],
-      "codeaCategories": ["Local Materials", "Climate-Responsive"]
-    }
-  ]
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-card border-t border-border">
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Library className="h-6 w-6 text-muted-foreground" />
+              <span className="font-semibold text-foreground text-lg">
+                CODEA Foundation
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-sm">
+              © {currentYear} CODEA Foundation — Pan-African Architectural
+              Intelligence.
+            </p>
+            <p className="text-xs text-muted-foreground/70 mt-2">
+              Powered by Builder Africa.
+            </p>
+          </div>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Sections</h3>
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              About
+            </Link>
+          </nav>
+          <nav className="flex flex-col gap-3 text-sm">
+            <h3 className="font-semibold text-foreground mb-2">Support</h3>
+             <Link
+              href="/support"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Support / Contact
+            </Link>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  );
 }
