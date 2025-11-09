@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Library, Menu } from 'lucide-react';
@@ -21,8 +20,7 @@ const navLinks = [
   { href: '/lexicon', label: 'Lexicon' },
   { href: '/archive', label: 'Archive' },
   { href: '/research-network', label: 'Research Network' },
-  { href: '/community', label: 'Community' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/support', label: 'Support' },
 ];
 
 export default function Header() {

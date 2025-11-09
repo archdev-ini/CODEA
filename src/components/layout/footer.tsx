@@ -29,7 +29,7 @@ export default function Footer() {
               href="/about"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              About CODEA
+              About
             </Link>
             <Link
               href="/atlas"
@@ -55,26 +55,14 @@ export default function Footer() {
             >
               Research Network
             </Link>
-             <Link
-              href="/community"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Community
-            </Link>
           </nav>
           <nav className="flex flex-col gap-3 text-sm">
             <h3 className="font-semibold text-foreground mb-2">Support</h3>
-            <Link
-              href="/contact"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              Contact
-            </Link>
              <Link
               href="/support"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Support / FAQs
+              Support / Contact
             </Link>
           </nav>
         </div>
